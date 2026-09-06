@@ -29,7 +29,7 @@ export function SiteHeader() {
   return (
     <header className="app-safe-header sticky top-0 z-40 border-b border-[#6b4b2e]/25 bg-[#f1e5ce]/95 backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-5 sm:px-8 lg:px-14">
-        <BrandMark />
+        <BrandMark expanded />
         <nav aria-label="Primary navigation" className="hidden items-center gap-8 lg:flex">
           {links.map((link) => (
             <Link

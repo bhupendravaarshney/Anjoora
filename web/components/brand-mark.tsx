@@ -14,7 +14,7 @@ export function BrandMark({ inverted = false, compact = false, expanded = false 
     <Link
       href="/"
       aria-label="ANJOORA — Ancient wisdom. Made personal."
-      className={`inline-flex shrink-0 items-center gap-3.5 ${inverted ? "text-[#fffaf0]" : "text-[#173f33]"}`}
+      className={`inline-flex min-w-0 shrink-0 items-center gap-2.5 sm:gap-3.5 ${inverted ? "text-[#fffaf0]" : "text-[#173f33]"}`}
     >
       <Image
         src="/anjoora-logo-mark.svg"
@@ -23,11 +23,11 @@ export function BrandMark({ inverted = false, compact = false, expanded = false 
         height={52}
         unoptimized
         aria-hidden="true"
-        className="size-11 shrink-0 drop-shadow-[0_4px_10px_rgba(26,49,37,.16)] sm:size-12"
+        className="size-10 shrink-0 drop-shadow-[0_4px_10px_rgba(26,49,37,.16)] sm:size-12"
       />
       <span className={`${lockupVisibility} min-w-0 flex-col`}>
-        <span className="font-display text-[1.16rem] font-semibold leading-none tracking-[.22em] sm:text-[1.22rem]">ANJOORA</span>
-        <span className={`mt-1.5 whitespace-nowrap text-[.53rem] font-semibold uppercase leading-none tracking-[.19em] ${inverted ? "text-[#d9bc82]" : "text-[#76654c]"}`}>
+        <span className="font-display text-[1rem] font-semibold leading-none tracking-[.18em] sm:text-[1.22rem] sm:tracking-[.22em]">ANJOORA</span>
+        <span className={`mt-1 whitespace-nowrap text-[.43rem] font-semibold uppercase leading-none tracking-[.11em] sm:mt-1.5 sm:text-[.53rem] sm:tracking-[.19em] ${inverted ? "text-[#d9bc82]" : "text-[#76654c]"}`}>
           Ancient wisdom. Made personal.
         </span>
       </span>

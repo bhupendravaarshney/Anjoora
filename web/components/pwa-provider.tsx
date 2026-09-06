@@ -182,7 +182,7 @@ export function InstallAppButton({ className = "" }: { className?: string }) {
       className={`h-10 rounded-sm border border-[#6b4b2e]/20 bg-[#fbf5e7]/55 px-3 text-[#294738] hover:bg-[#ead9bb] ${className}`}
     >
       <Download className="size-4" />
-      <span>Install</span>
+      <span className="hidden min-[480px]:inline">Install</span>
     </Button>
   );
 }
