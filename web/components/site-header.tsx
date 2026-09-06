@@ -20,6 +20,7 @@ import {
 const links = [
   { href: "/apothecary", label: "The apothecary" },
   { href: "/how-it-works", label: "The journey" },
+  { href: "/about", label: "About us" },
   { href: "/standards", label: "Our standard" },
 ];
 

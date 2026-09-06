@@ -139,8 +139,9 @@ body {
 
 .apothecary-wood {
   background:
-    linear-gradient(105deg, rgba(255, 255, 255, 0.018) 25%, transparent 25%) 0 0 / 2rem 100%,
-    linear-gradient(90deg, #1b1712, #2d2017 48%, #1d1813);
+    radial-gradient(circle at 18% 24%, rgba(214, 181, 112, 0.075), transparent 18rem),
+    repeating-linear-gradient(102deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 14px),
+    linear-gradient(90deg, #0d2d22, #173f31 48%, #0b291f);
 }
 
 .folio-frame {

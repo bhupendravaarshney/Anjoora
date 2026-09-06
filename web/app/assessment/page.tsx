@@ -546,7 +546,7 @@ export default function AssessmentPage() {
                           <label
                             key={item.name}
                             htmlFor={`concern-${index}`}
-                            className={`relative min-h-16 rounded-sm border p-5 transition-[border-color,background-color] duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#a66035] ${selected ? "cursor-pointer border-[#a8793f] bg-[#ead9bb]" : unavailable ? "cursor-not-allowed border-[#6b4b2e]/10 bg-[#fbf5e7]/55 opacity-55" : "cursor-pointer border-[#6b4b2e]/20 bg-[#fbf5e7] hover:border-[#8b432d]/60 hover:bg-[#faf1df]"}`}
+                            className={`relative min-h-16 rounded-[2rem] border px-5 py-4 transition-[border-color,background-color] duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#35654f] ${selected ? "cursor-pointer border-[#47765f] bg-[#dbe8dc]" : unavailable ? "cursor-not-allowed border-[#315b48]/10 bg-[#fbf5e7]/55 opacity-55" : "cursor-pointer border-[#315b48]/20 bg-[#fbf5e7] hover:border-[#35654f]/60 hover:bg-[#edf4ec]"}`}
                           >
                             <div className="flex items-start gap-4">
                               <Checkbox
@@ -598,7 +598,7 @@ export default function AssessmentPage() {
                               <label
                                 key={name}
                                 htmlFor={`primary-concern-${index}`}
-                                className={`flex min-h-14 cursor-pointer items-center gap-3 rounded-sm border px-4 py-3 transition-[border-color,background-color] duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#a66035] ${concernName === name ? "border-[#a8793f] bg-[#ead9bb]" : "border-[#6b4b2e]/18 bg-[#fbf5e7] hover:border-[#8b432d]/55 hover:bg-[#faf1df]"}`}
+                                className={`flex min-h-14 cursor-pointer items-center gap-3 rounded-full border px-5 py-3 transition-[border-color,background-color] duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#35654f] ${concernName === name ? "border-[#47765f] bg-[#dbe8dc]" : "border-[#315b48]/18 bg-[#fbf5e7] hover:border-[#35654f]/55 hover:bg-[#edf4ec]"}`}
                               >
                                 <RadioGroupItem id={`primary-concern-${index}`} value={name} />
                                 <span className="font-medium text-[#294738]">{name}</span>
@@ -656,7 +656,7 @@ export default function AssessmentPage() {
                     <QuestionBlock title="Rituals you would realistically follow" note="Select one or more." invalid={showValidation && rituals.length === 0}>
                       <div className="grid gap-2 sm:grid-cols-2">
                         {ritualOptions.map((item, index) => (
-                          <label key={item} htmlFor={`ritual-${index}`} className={`flex min-h-16 cursor-pointer items-center gap-3 rounded-sm border px-4 py-3 transition-[border-color,background-color] duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#a66035] ${rituals.includes(item) ? "border-[#a8793f] bg-[#ead9bb]" : "border-[#6b4b2e]/18 bg-[#fffaf0] hover:border-[#8b432d]/55 hover:bg-[#faf1df]"}`}>
+                          <label key={item} htmlFor={`ritual-${index}`} className={`flex min-h-16 cursor-pointer items-center gap-3 rounded-full border px-5 py-3 transition-[border-color,background-color] duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#35654f] ${rituals.includes(item) ? "border-[#47765f] bg-[#dbe8dc]" : "border-[#315b48]/18 bg-[#fffaf0] hover:border-[#35654f]/55 hover:bg-[#edf4ec]"}`}>
                             <Checkbox id={`ritual-${index}`} checked={rituals.includes(item)} onCheckedChange={() => toggleList(item, rituals, setRituals)} />
                             <span className="font-medium leading-6 text-[#294738]">{item}</span>
                           </label>
@@ -688,7 +688,7 @@ export default function AssessmentPage() {
                     <QuestionBlock title="Safety check" note="Select everything that applies." invalid={showValidation && safety.length === 0}>
                       <div className="space-y-2">
                         {safetyOptions.map((item) => (
-                          <label key={item.value} htmlFor={`safety-${item.value}`} className={`flex min-h-14 cursor-pointer items-start gap-4 rounded-sm border px-4 py-3 transition-[border-color,background-color] duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#a66035] ${safety.includes(item.value) ? (item.urgent ? "border-[#b83f37] bg-[#fff0ec]" : "border-[#a8793f] bg-[#ead9bb]") : "border-[#6b4b2e]/18 bg-[#fffaf0] hover:border-[#8b432d]/55 hover:bg-[#faf1df]"}`}>
+                          <label key={item.value} htmlFor={`safety-${item.value}`} className={`flex min-h-14 cursor-pointer items-start gap-4 rounded-[2rem] border px-5 py-3 transition-[border-color,background-color] duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#35654f] ${safety.includes(item.value) ? (item.urgent ? "border-[#b83f37] bg-[#fff0ec]" : "border-[#47765f] bg-[#dbe8dc]") : "border-[#315b48]/18 bg-[#fffaf0] hover:border-[#35654f]/55 hover:bg-[#edf4ec]"}`}>
                             <Checkbox id={`safety-${item.value}`} checked={safety.includes(item.value)} onCheckedChange={() => toggleList(item.value, safety, setSafety)} className="mt-1" />
                             <span className="leading-7 text-[#294738]">{item.label}</span>
                           </label>
@@ -787,7 +787,7 @@ function CompactOptionGroup({
   return (
     <RadioGroup value={value} onValueChange={onChange} className="grid gap-2 sm:grid-cols-2">
       {options.map((option, index) => (
-        <label key={option.value} htmlFor={`${name}-${index}`} className={`flex min-h-16 cursor-pointer items-start gap-3 rounded-sm border px-4 py-3 transition-[border-color,background-color] duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#a66035] ${value === option.value ? "border-[#a8793f] bg-[#ead9bb]" : "border-[#6b4b2e]/22 bg-[#fffaf0] hover:border-[#8b432d]/60 hover:bg-[#faf1df]"}`}>
+        <label key={option.value} htmlFor={`${name}-${index}`} className={`flex min-h-16 cursor-pointer items-start gap-3 rounded-[2rem] border px-5 py-3 transition-[border-color,background-color] duration-150 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#35654f] ${value === option.value ? "border-[#47765f] bg-[#dbe8dc]" : "border-[#315b48]/22 bg-[#fffaf0] hover:border-[#35654f]/60 hover:bg-[#edf4ec]"}`}>
           <RadioGroupItem id={`${name}-${index}`} value={option.value} className="mt-1 border-[#9b7444] text-[#263f32] data-[state=checked]:border-[#a8793f] data-[state=checked]:bg-[#f4e5c8]" />
           <span>
             <span className={`block leading-6 text-[#294738] ${value === option.value ? "font-semibold" : "font-medium"}`}>{option.label}</span>
