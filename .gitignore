@@ -1,0 +1,12 @@
+.idea/
+screenshots/
+
+**/node_modules/
+**/.next/
+**/.env*
+!**/.env.example
+**/npm-debug.log*
+**/dev-server*.log
+
+.DS_Store
+Thumbs.db
