@@ -21,6 +21,7 @@ type BeforeInstallPromptEvent = Event & {
 
 type PwaContextValue = {
   installed: boolean;
+  installSupported: boolean;
   ready: boolean;
   requestInstall: () => Promise<void>;
 };
@@ -32,9 +33,17 @@ function runningStandalone() {
     Boolean((window.navigator as Navigator & { standalone?: boolean }).standalone);
 }
 
+function supportsAndroidInstall() {
+  const userAgent = window.navigator.userAgent;
+  const android = /android/i.test(userAgent);
+  const androidWebView = /; wv\)/i.test(userAgent) || /version\/\d+(?:\.\d+)*.*chrome/i.test(userAgent);
+  return android && !androidWebView;
+}
+
 export function PwaProvider({ children }: { children: React.ReactNode }) {
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [installed, setInstalled] = useState(false);
+  const [installSupported, setInstallSupported] = useState(false);
   const [ready, setReady] = useState(false);
   const [instructionsOpen, setInstructionsOpen] = useState(false);
   const [ios, setIos] = useState(false);
@@ -43,6 +52,7 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const hydrationTimer = window.setTimeout(() => {
       setInstalled(runningStandalone());
+      setInstallSupported(supportsAndroidInstall());
       setIos(/iphone|ipad|ipod/i.test(window.navigator.userAgent));
       setSecureContext(window.isSecureContext);
       setReady(true);
@@ -85,6 +95,7 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<PwaContextValue>(() => ({
     installed,
+    installSupported,
     ready,
     requestInstall: async () => {
       if (runningStandalone()) {
@@ -102,7 +113,7 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
       if (choice.outcome === "accepted") setInstalled(true);
       setInstallPrompt(null);
     },
-  }), [installPrompt, installed, ready]);
+  }), [installPrompt, installSupported, installed, ready]);
 
   return (
     <PwaContext.Provider value={value}>
@@ -170,7 +181,7 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
 export function InstallAppButton({ className = "" }: { className?: string }) {
   const context = useContext(PwaContext);
   if (!context) throw new Error("InstallAppButton must be used inside PwaProvider");
-  if (!context.ready || context.installed) return null;
+  if (!context.ready || !context.installSupported || context.installed) return null;
 
   return (
     <Button
