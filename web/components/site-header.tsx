@@ -18,10 +18,10 @@ import {
 } from "@/components/ui/sheet";
 
 const links = [
-  { href: "/apothecary", label: "The apothecary" },
-  { href: "/how-it-works", label: "The journey" },
-  { href: "/about", label: "About us" },
-  { href: "/standards", label: "Our standard" },
+  { href: "/apothecary", label: "Apothecary" },
+  { href: "/how-it-works", label: "The Journey" },
+  { href: "/standards", label: "Our Standard" },
+  { href: "/about", label: "About Us" },
 ];
 
 export function SiteHeader() {

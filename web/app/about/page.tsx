@@ -12,6 +12,9 @@ import {
   UserRound,
 } from "lucide-react";
 
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
+
 export const metadata: Metadata = {
   title: "About ANJOORA | The Return of the Personal Vaidya",
   description:
@@ -51,14 +54,6 @@ const timeline = [
   },
 ];
 
-const consultationSteps = [
-  ["01", "Concerns", "What matters now"],
-  ["02", "Present Pattern", "Goal, duration and effect"],
-  ["03", "Body Tendencies", "Ayurveda-informed context"],
-  ["04", "Daily Rhythm", "Food, sleep and rituals"],
-  ["05", "Inner Climate", "Emotion and change style"],
-  ["06", "Preparation", "Format and safety"],
-];
 
 const philosophy = [
   {
@@ -98,6 +93,7 @@ const pillars = [
 export default function AboutPage() {
   return (
       <main className="overflow-x-hidden bg-[#f5eddc] text-[#24372b]">
+        <SiteHeader />
         {/* =========================================================
           HERO
       ========================================================== */}
@@ -117,15 +113,15 @@ export default function AboutPage() {
             />
           </div>
 
-          <div className="mx-auto grid min-h-[730px] max-w-[1440px] items-center gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:px-12 lg:py-20 xl:px-16">
+          <div className="mx-auto grid max-w-[1440px] items-center gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:min-h-[680px] lg:grid-cols-[0.92fr_1.08fr] lg:px-12 lg:py-20 xl:px-16">
             <div className="max-w-[660px]">
               <p className="mb-5 text-xs font-semibold tracking-[0.28em] text-[#a27c39]">
                 OUR STORY
               </p>
 
-              <h1 className="font-serif text-[clamp(3.25rem,6.5vw,7rem)] leading-[0.92] tracking-[-0.04em] text-[#173d2c]">
+              <h3 className="font-serif text-[clamp(2.85rem,6.2vw,6.5rem)] leading-[0.92] tracking-[-0.04em] text-[#173d2c]">
                 The Return of the Personal Vaidya
-              </h1>
+              </h3>
 
               <p className="mt-8 max-w-[610px] font-serif text-[clamp(1.3rem,2.1vw,2rem)] leading-[1.32] text-[#3a3a30]">
                 Healing was never meant to be one-size-fits-all.
@@ -139,7 +135,7 @@ export default function AboutPage() {
 
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <Link
-                    href="/consultation"
+                    href="/assessment"
                     className="inline-flex min-h-12 items-center justify-center gap-2 border border-[#173d2c] bg-[#173d2c] px-6 py-3 text-sm font-semibold tracking-wide text-[#fffaf0] transition hover:bg-[#214e38] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a27c39] focus-visible:ring-offset-2"
                 >
                   Begin Your Consultation
@@ -155,19 +151,19 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="relative mx-auto w-full max-w-[760px]">
+            <div className="relative mx-auto w-full max-w-[680px]">
               <div
                   aria-hidden="true"
                   className="absolute -left-4 -top-4 h-full w-full border border-[#a27c39]/40"
               />
-              <div className="relative aspect-[1.03/1] overflow-hidden border border-[#7b6a48]/30 bg-[#d9c5a1] shadow-[0_24px_70px_rgba(56,45,25,0.16)]">
+              <div className="relative aspect-[4/3] overflow-hidden border border-[#7b6a48]/30 bg-[#d9c5a1] shadow-[0_24px_70px_rgba(56,45,25,0.16)] lg:aspect-[1.08/1]">
                 <Image
                     src="/about/01-hero-vaidya-and-products.webp"
                     alt="Vaidya preparing a personalised herbal formulation beside ANJOORA products"
                     fill
                     priority
                     sizes="(max-width: 1024px) 92vw, 54vw"
-                    className="object-cover"
+                    className="object-cover object-[center_62%]"
                 />
                 <div
                     aria-hidden="true"
@@ -181,7 +177,7 @@ export default function AboutPage() {
         {/* =========================================================
           STORY TIMELINE
       ========================================================== */}
-        <section className="border-b border-[#b89a61]/25 py-20 sm:py-24">
+        <section className="border-b border-[#b89a61]/25 py-16 sm:py-24">
           <div className="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-12">
             <div className="mx-auto max-w-[800px] text-center">
               <p className="text-xs font-semibold tracking-[0.28em] text-[#a27c39]">
@@ -192,7 +188,7 @@ export default function AboutPage() {
               </h2>
             </div>
 
-            <div className="relative mt-14 grid gap-5 lg:grid-cols-3">
+            <div className="relative mt-10 grid gap-5 sm:mt-14 lg:grid-cols-3">
               <div
                   aria-hidden="true"
                   className="absolute left-[16.5%] right-[16.5%] top-[27px] hidden border-t border-[#a27c39]/40 lg:block"
@@ -203,13 +199,13 @@ export default function AboutPage() {
                       key={item.number}
                       className="relative overflow-hidden border border-[#b49a68]/30 bg-[#fbf6ea]/60"
                   >
-                    <div className="relative aspect-[1.3/1] overflow-hidden">
+                    <div className="relative aspect-[16/10] overflow-hidden">
                       <Image
                           src={item.image}
                           alt={item.alt}
                           fill
                           sizes="(max-width: 1024px) 92vw, 31vw"
-                          className="object-cover"
+                          className="object-cover object-center"
                       />
                       <div
                           aria-hidden="true"
@@ -217,7 +213,7 @@ export default function AboutPage() {
                       />
                     </div>
 
-                    <div className="p-7 sm:p-8">
+                    <div className="p-6 sm:p-8">
                       <div className="relative z-10 flex items-center gap-4">
                     <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full border border-[#a27c39]/65 bg-[#f5eddc] font-serif text-lg text-[#a27c39]">
                       {item.number}
@@ -234,7 +230,7 @@ export default function AboutPage() {
                         {item.title}
                       </h3>
 
-                      <p className="mt-4 text-[15px] leading-7 text-[#6b665a]">
+                      <p className="mt-4 text-base leading-7 text-[#6b665a]">
                         {item.body}
                       </p>
                     </div>
@@ -247,16 +243,16 @@ export default function AboutPage() {
         {/* =========================================================
           HEALING HAD A FACE
       ========================================================== */}
-        <section className="py-20 sm:py-28">
+        <section className="py-16 sm:py-24 lg:py-28">
           <div className="mx-auto grid max-w-[1320px] items-center gap-12 px-5 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:px-12">
             <div className="relative">
-              <div className="relative aspect-[0.78/1] overflow-hidden border border-[#8e764d]/30">
+              <div className="relative aspect-[4/3] overflow-hidden border border-[#8e764d]/30 sm:aspect-[5/4] lg:aspect-[4/5]">
                 <Image
                     src="/about/05-vaidya-preparing-herbs.webp"
                     alt="Vaidya preparing herbs in a traditional apothecary setting"
                     fill
                     sizes="(max-width: 1024px) 92vw, 42vw"
-                    className="object-cover"
+                    className="object-cover object-[center_28%]"
                 />
               </div>
 
@@ -296,7 +292,7 @@ export default function AboutPage() {
         {/* =========================================================
           EVERY REMEDY WAS PERSONAL
       ========================================================== */}
-        <section className="border-y border-[#b89a61]/25 bg-[#efe2ca] py-20 sm:py-24">
+        <section className="border-y border-[#b89a61]/25 bg-[#efe2ca] py-16 sm:py-24">
           <div className="mx-auto grid max-w-[1320px] items-center gap-12 px-5 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-12">
             <div>
               <p className="text-xs font-semibold tracking-[0.28em] text-[#9a7436]">
@@ -318,13 +314,13 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="relative min-h-[360px] overflow-hidden border border-[#9d8356]/30 lg:min-h-[470px]">
+            <div className="relative aspect-[4/3] overflow-hidden border border-[#9d8356]/30 lg:aspect-[4/5]">
               <Image
                   src="/about/06-botanical-apothecary-detail.webp"
                   alt="Botanical apothecary detail with traditional preparation elements"
                   fill
                   sizes="(max-width: 1024px) 92vw, 42vw"
-                  className="object-cover"
+                  className="object-cover object-bottom"
               />
             </div>
           </div>
@@ -333,7 +329,7 @@ export default function AboutPage() {
         {/* =========================================================
           WHY ANJOORA EXISTS
       ========================================================== */}
-        <section className="py-20 sm:py-28">
+        <section className="py-16 sm:py-24">
           <div className="mx-auto max-w-[980px] px-5 text-center sm:px-8">
             <p className="text-xs font-semibold tracking-[0.28em] text-[#a27c39]">
               WHY ANJOORA EXISTS
@@ -355,251 +351,7 @@ export default function AboutPage() {
             </p>
           </div>
         </section>
-
-        {/* =========================================================
-          MODERN DAY VAIDYA
-      ========================================================== */}
-        <section className="relative overflow-hidden bg-[#123b2a] py-20 text-[#f9efd9] sm:py-28">
-          <div
-              aria-hidden="true"
-              className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_15%_15%,rgba(196,157,86,0.22),transparent_32%),radial-gradient(circle_at_85%_90%,rgba(196,157,86,0.14),transparent_30%)]"
-          />
-
-          <div className="relative mx-auto grid max-w-[1320px] items-center gap-12 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:px-12">
-            <div>
-              <p className="text-xs font-semibold tracking-[0.28em] text-[#d2ad64]">
-                ANCIENT WISDOM · CONTEMPORARY CARE
-              </p>
-
-              <h2 className="mt-4 font-serif text-[clamp(3rem,6vw,6rem)] leading-[0.95] tracking-[-0.035em]">
-                The Modern-Day Vaidya
-              </h2>
-
-              <p className="mt-7 max-w-[700px] text-base leading-8 text-[#e7dcc6]/90 sm:text-lg">
-                ANJOORA combines traditional Ayurvedic thinking with structured
-                modern consultation to help a Vaidya understand the person more
-                completely and prepare an individual wellness recommendation.
-              </p>
-
-              <div className="mt-10 grid gap-px overflow-hidden border border-[#d2ad64]/35 bg-[#d2ad64]/25 sm:grid-cols-2">
-                {[
-                  ["We Listen", "Your concerns, goals and priorities."],
-                  [
-                    "We Understand",
-                    "Your tendencies, routines and lifestyle context.",
-                  ],
-                  [
-                    "We Personalise",
-                    "The recommendation is shaped around what you actually need.",
-                  ],
-                  [
-                    "A Vaidya Reviews",
-                    "Human judgement remains central to the process.",
-                  ],
-                ].map(([title, body]) => (
-                    <article key={title} className="bg-[#123b2a] p-6 sm:p-7">
-                      <div className="mb-5 h-px w-10 bg-[#d2ad64]" />
-                      <h3 className="font-serif text-2xl text-[#f7e9cb]">{title}</h3>
-                      <p className="mt-3 text-sm leading-7 text-[#e4d6bb]/80">
-                        {body}
-                      </p>
-                    </article>
-                ))}
-              </div>
-            </div>
-
-            <div className="relative min-h-[540px] overflow-hidden border border-[#d2ad64]/35 lg:min-h-[680px]">
-              <Image
-                  src="/about/05-vaidya-preparing-herbs.webp"
-                  alt="Vaidya preparing herbs for a personalised wellness formulation"
-                  fill
-                  sizes="(max-width: 1024px) 92vw, 47vw"
-                  className="object-cover"
-              />
-              <div
-                  aria-hidden="true"
-                  className="absolute inset-0 bg-gradient-to-t from-[#123b2a]/45 via-transparent to-transparent"
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* =========================================================
-          HOW ANJOORA WORKS
-      ========================================================== */}
-        <section
-            id="how-anjoora-works"
-            className="scroll-mt-24 py-20 sm:py-28"
-        >
-          <div className="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-12">
-            <div className="mx-auto max-w-[840px] text-center">
-              <p className="text-xs font-semibold tracking-[0.28em] text-[#a27c39]">
-                YOUR CONSULTATION JOURNEY
-              </p>
-
-              <h2 className="mt-4 font-serif text-[clamp(2.7rem,5vw,5.1rem)] leading-[1] tracking-[-0.035em] text-[#173d2c]">
-                We begin with you. Not with products.
-              </h2>
-
-              <p className="mx-auto mt-6 max-w-[720px] text-base leading-8 text-[#686257]">
-                A structured consultation helps build context step by step before
-                any personalised recommendation is considered.
-              </p>
-            </div>
-
-            <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {consultationSteps.map(([number, title, body]) => (
-                  <article
-                      key={number}
-                      className="border border-[#b39767]/30 bg-[#fbf6ea]/65 p-6 transition hover:border-[#a27c39]/55"
-                  >
-                    <p className="text-xs font-bold tracking-[0.2em] text-[#a27c39]">
-                      {number}
-                    </p>
-                    <h3 className="mt-4 font-serif text-2xl text-[#234434]">
-                      {title}
-                    </h3>
-                    <p className="mt-2 text-sm leading-6 text-[#6d685d]">{body}</p>
-                  </article>
-              ))}
-            </div>
-
-            <div className="mt-6 grid items-stretch gap-4 lg:grid-cols-[1fr_auto_1fr]">
-              <div className="border border-[#a27c39]/45 bg-[#efe2ca] p-7 text-center">
-                <ShieldCheck className="mx-auto h-7 w-7 stroke-[1.4] text-[#87692f]" />
-                <p className="mt-3 text-xs font-bold tracking-[0.2em] text-[#87692f]">
-                  HUMAN REVIEW
-                </p>
-                <h3 className="mt-2 font-serif text-2xl text-[#244536]">
-                  Vaidya Review
-                </h3>
-              </div>
-
-              <div className="hidden items-center justify-center lg:flex">
-                <ArrowRight className="h-6 w-6 text-[#a27c39]" />
-              </div>
-
-              <div className="border border-[#173d2c] bg-[#173d2c] p-7 text-center text-[#f8ecd2]">
-                <Sparkles className="mx-auto h-7 w-7 stroke-[1.4] text-[#d2ad64]" />
-                <p className="mt-3 text-xs font-bold tracking-[0.2em] text-[#d2ad64]">
-                  PERSONALISED
-                </p>
-                <h3 className="mt-2 font-serif text-2xl">
-                  Wellness Recommendation
-                </h3>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* =========================================================
-          PHILOSOPHY
-      ========================================================== */}
-        <section className="relative overflow-hidden border-y border-[#b89a61]/25 bg-[#eadbc0] py-20 sm:py-28">
-          <div className="absolute bottom-0 right-0 hidden h-64 w-64 opacity-10 md:block">
-            <Image
-                src="/about/07-mortar-botanical-line-art.webp"
-                alt=""
-                fill
-                aria-hidden="true"
-                className="object-contain object-bottom-right"
-            />
-          </div>
-
-          <div className="relative mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-12">
-            <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-14">
-              <div>
-                <p className="text-xs font-semibold tracking-[0.28em] text-[#8d6b31]">
-                  OUR PHILOSOPHY
-                </p>
-
-                <h2 className="mt-4 font-serif text-[clamp(2.8rem,5vw,5rem)] leading-[0.98] tracking-[-0.035em] text-[#173d2c]">
-                  Not mass selected. Personally considered.
-                </h2>
-
-                <p className="mt-6 max-w-[520px] font-serif text-2xl leading-snug text-[#605744]">
-                  Because nature never made two people exactly alike.
-                </p>
-              </div>
-
-              <div className="grid gap-px overflow-hidden border border-[#9c7c41]/35 bg-[#9c7c41]/25 sm:grid-cols-2">
-                {philosophy.map(({ icon: Icon, title, body }) => (
-                    <article key={title} className="bg-[#f3e8d3] p-7">
-                      <Icon className="h-8 w-8 stroke-[1.4] text-[#8a692f]" />
-                      <h3 className="mt-5 font-serif text-2xl text-[#234434]">
-                        {title}
-                      </h3>
-                      <p className="mt-3 text-sm leading-7 text-[#655f54]">
-                        {body}
-                      </p>
-                    </article>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* =========================================================
-          BRAND PILLARS
-      ========================================================== */}
-        <section className="py-16 sm:py-20">
-          <div className="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-12">
-            <div className="grid grid-cols-2 gap-px overflow-hidden border border-[#b49a68]/30 bg-[#b49a68]/25 md:grid-cols-5">
-              {pillars.map(({ icon: Icon, label }) => (
-                  <div
-                      key={label}
-                      className="flex min-h-[165px] flex-col items-center justify-center bg-[#f7f0e1] p-5 text-center"
-                  >
-                    <div className="grid h-12 w-12 place-items-center rounded-full border border-[#94743b]/45">
-                      <Icon className="h-6 w-6 stroke-[1.4] text-[#795e2f]" />
-                    </div>
-                    <p className="mt-4 max-w-[180px] font-serif text-lg leading-snug text-[#294437]">
-                      {label}
-                    </p>
-                  </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* =========================================================
-          CLOSING CTA
-      ========================================================== */}
-        <section className="relative overflow-hidden bg-[#103724] px-5 py-20 text-center text-[#faefd8] sm:px-8 sm:py-24">
-          <div
-              aria-hidden="true"
-              className="absolute inset-0 opacity-15 [background-image:radial-gradient(circle_at_50%_0%,rgba(213,174,100,0.3),transparent_44%)]"
-          />
-
-          <div className="relative mx-auto max-w-[920px]">
-            <Leaf className="mx-auto h-8 w-8 stroke-[1.3] text-[#d3ad62]" />
-
-            <h2 className="mt-5 font-serif text-[clamp(2.9rem,5.6vw,5.8rem)] leading-[0.96] tracking-[-0.035em]">
-              Rooted in tradition. Designed for today.
-            </h2>
-
-            <p className="mx-auto mt-6 max-w-[640px] text-base leading-8 text-[#eadcc2]/85 sm:text-lg">
-              Ancient wisdom. Modern care. Personalised always.
-            </p>
-
-            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link
-                  href="/consultation"
-                  className="inline-flex min-h-12 items-center justify-center gap-2 border border-[#d3ad62] bg-[#d3ad62] px-6 py-3 text-sm font-semibold text-[#173323] transition hover:bg-[#e0bd79] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6e2bb] focus-visible:ring-offset-2 focus-visible:ring-offset-[#103724]"
-              >
-                Begin Your ANJOORA Consultation
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-
-              <Link
-                  href="/"
-                  className="inline-flex min-h-12 items-center justify-center border border-[#f0dfbd]/35 px-6 py-3 text-sm font-semibold text-[#f6e8cd] transition hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6e2bb] focus-visible:ring-offset-2 focus-visible:ring-offset-[#103724]"
-              >
-                Return Home
-              </Link>
-            </div>
-          </div>
-        </section>
+        <SiteFooter />
       </main>
   );
 }

@@ -16,8 +16,8 @@ export function SiteFooter() {
           <div>
             <p className="eyebrow text-[#d4a55f]">Explore</p>
             <div className="mt-5 flex flex-col gap-3 text-[#fffaf0]/70">
-              <Link href="/apothecary" className="hover:text-[#fffaf0]">The apothecary</Link>
-              <Link href="/how-it-works" className="hover:text-[#fffaf0]">The making journey</Link>
+              <Link href="/apothecary" className="hover:text-[#fffaf0]">Apothecary</Link>
+              <Link href="/how-it-works" className="hover:text-[#fffaf0]">Making Journey</Link>
               <Link href="/about" className="hover:text-[#fffaf0]">About ANJOORA</Link>
               <Link href="/assessment" className="hover:text-[#fffaf0]">Consultation folio</Link>
             </div>
