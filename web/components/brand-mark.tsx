@@ -26,8 +26,8 @@ export function BrandMark({ inverted = false, compact = false, expanded = false 
         className="size-10 shrink-0 drop-shadow-[0_4px_10px_rgba(26,49,37,.16)] sm:size-12"
       />
       <span className={`${lockupVisibility} min-w-0 flex-col`}>
-        <span className="font-display text-[1rem] font-semibold leading-none tracking-[.18em] sm:text-[1.22rem] sm:tracking-[.22em]">ANJOORA</span>
-        <span className={`mt-1 whitespace-nowrap text-[.43rem] font-semibold uppercase leading-none tracking-[.11em] sm:mt-1.5 sm:text-[.53rem] sm:tracking-[.19em] ${inverted ? "text-[#d9bc82]" : "text-[#76654c]"}`}>
+        <span className="font-display text-[1.1rem] font-semibold leading-none tracking-[.20em] sm:text-[1.22rem] sm:tracking-[.22em]">ANJOORA</span>
+        <span className={`mt-1 whitespace-nowrap text-[.52rem] font-semibold uppercase leading-none tracking-[.14em] sm:mt-1.5 sm:text-[.53rem] sm:tracking-[.19em] ${inverted ? "text-[#d9bc82]" : "text-[#76654c]"}`}>
           Ancient wisdom. Made personal.
         </span>
       </span>
