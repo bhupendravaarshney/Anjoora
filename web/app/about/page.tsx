@@ -3,13 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
-  BookOpenText,
-  HeartHandshake,
-  Leaf,
-  ShieldCheck,
-  Sparkles,
-  Sprout,
-  UserRound,
 } from "lucide-react";
 
 import { SiteFooter } from "@/components/site-footer";
@@ -54,41 +47,6 @@ const timeline = [
   },
 ];
 
-
-const philosophy = [
-  {
-    icon: UserRound,
-    title: "No One-Size-Fits-All",
-    body:
-        "Individual context matters. We begin by understanding the person rather than starting with a shelf of products.",
-  },
-  {
-    icon: Leaf,
-    title: "Purposeful Ingredients",
-    body:
-        "Ingredients are considered for the intended formulation, format and wellness context — not added simply to make a longer label.",
-  },
-  {
-    icon: Sparkles,
-    title: "Thoughtful Preparation",
-    body:
-        "Formulations are developed with attention to combination, preparation, format and the practical way they fit into daily life.",
-  },
-  {
-    icon: HeartHandshake,
-    title: "Human-Led Personalisation",
-    body:
-        "Technology helps organise the consultation. Human Vaidya judgement remains central to the recommendation.",
-  },
-];
-
-const pillars = [
-  { icon: BookOpenText, label: "Ancient Ayurvedic Wisdom" },
-  { icon: Sprout, label: "Time-Tested Traditions" },
-  { icon: Leaf, label: "Natural Ingredients" },
-  { icon: UserRound, label: "Personalised for You" },
-  { icon: HeartHandshake, label: "Care for Body, Mind & Daily Life" },
-];
 
 export default function AboutPage() {
   return (

@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 type WellnessPlan = {
+  submissionId?: string;
   concern?: string;
   concerns?: string[];
   formula?: string;
@@ -31,6 +32,7 @@ type WellnessPlan = {
   duration?: string;
   impact?: string;
   format?: string;
+  safety?: string[];
   name?: string;
   phone?: string;
   ayurveda?: {
@@ -50,7 +52,10 @@ type WellnessPlan = {
   };
 };
 
-const ANJOORA_WHATSAPP_NUMBER = "918791248179";
+type ConsultationSubmission = {
+  folio_id: string;
+  whatsapp_url: string | null;
+};
 
 const folioLabels: Record<string, string> = {
   recent: "Recently (less than 4 weeks)",
@@ -136,6 +141,9 @@ export default function ConnectPage() {
   const [contactTime, setContactTime] = useState("afternoon");
   const [consent, setConsent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState("");
+  const [submission, setSubmission] = useState<ConsultationSubmission | null>(null);
 
   useEffect(() => {
     const stored = window.localStorage.getItem("anjoora-plan");
@@ -159,54 +167,72 @@ export default function ConnectPage() {
     city.trim().length >= 2 &&
     consent;
 
-  const openWhatsAppHandover = () => {
-    if (!ready) return;
+  const openWhatsAppHandover = async () => {
+    if (!ready || submitting) return;
 
-    const selectedConcerns = plan.concerns?.length
-      ? plan.concerns.join(", ")
-      : plan.concern ?? "Not provided";
-    const lines = [
-      "*ANJOORA · PERSONAL CONSULTATION FOLIO*",
-      "_For human Vaidya review_",
-      "",
-      "Hello ANJOORA, I have completed my consultation and would like my folio to be reviewed.",
-      "",
-      "*PERSONAL DETAILS*",
-      `• Name: ${name.trim()}`,
-      `• WhatsApp: ${phone.trim()}`,
-      `• City: ${city.trim()}`,
-      `• Language: ${languageLabel(language)}`,
-      `• Best time to message: ${sentenceCase(contactTime)}`,
-      "",
-      "*WHAT MATTERS NOW*",
-      `• Concerns: ${selectedConcerns}`,
-      `• Main goal: ${plan.focus || "Not provided"}`,
-      `• Duration: ${folioLabel(plan.duration)}`,
-      `• Daily effect: ${folioLabel(plan.impact)}`,
-      "",
-      "*BODY & DAILY RHYTHM*",
-      `• Appetite and digestion: ${folioLabel(plan.ayurveda?.appetite)}`,
-      `• Body climate: ${folioLabel(plan.ayurveda?.climate)}`,
-      `• Energy pattern: ${folioLabel(plan.ayurveda?.energyPattern)}`,
-      `• Meal rhythm: ${folioLabel(plan.dietLifestyle?.dietPattern)}`,
-      `• Sleep rhythm: ${folioLabel(plan.dietLifestyle?.sleepPattern)}`,
-      `• Realistic rituals: ${plan.dietLifestyle?.rituals?.join(", ") || "Not provided"}`,
-      "",
-      "*INNER CLIMATE & PREPARATION*",
-      `• Stress response: ${folioLabel(plan.emotions?.stressResponse)}`,
-      `• Emotional support: ${folioLabel(plan.emotions?.emotionalNeed)}`,
-      `• Change style: ${folioLabel(plan.emotions?.changeStyle)}`,
-      `• Preferred format: ${folioLabel(plan.format, "Team to recommend")}`,
-      "",
-      "*NEXT STEP*",
-      "Please review this context and let me know if you need any clarification before preparing a recommendation.",
-      "",
-      "_I consent to ANJOORA using these details to contact me on WhatsApp for review, recommendations and payment communication. I understand that this message does not place an order or make a payment._",
-    ];
-    const url = `https://wa.me/${ANJOORA_WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
+    setSubmitting(true);
+    setSubmissionError("");
+    const submissionId = plan.submissionId || crypto.randomUUID();
+    if (!plan.submissionId) {
+      const updatedPlan = { ...plan, submissionId };
+      setPlan(updatedPlan);
+      window.localStorage.setItem("anjoora-plan", JSON.stringify(updatedPlan));
+    }
+    const concerns = plan.concerns?.length
+      ? plan.concerns
+      : plan.concern
+        ? [plan.concern]
+        : [];
 
-    setSubmitted(true);
-    window.open(url, "_blank", "noopener,noreferrer");
+    try {
+      const response = await fetch("/api/consultations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          submission_id: submissionId,
+          name: name.trim(),
+          whatsapp: phone.trim(),
+          city: city.trim(),
+          language: languageLabel(language),
+          best_time_to_message: sentenceCase(contactTime),
+          primary_concern: plan.concern,
+          concerns,
+          main_goal: plan.focus,
+          duration: folioLabel(plan.duration),
+          daily_effect: folioLabel(plan.impact),
+          appetite_digestion: folioLabel(plan.ayurveda?.appetite),
+          body_climate: folioLabel(plan.ayurveda?.climate),
+          energy_pattern: folioLabel(plan.ayurveda?.energyPattern),
+          meal_rhythm: folioLabel(plan.dietLifestyle?.dietPattern),
+          sleep_rhythm: folioLabel(plan.dietLifestyle?.sleepPattern),
+          realistic_rituals: plan.dietLifestyle?.rituals ?? [],
+          stress_response: folioLabel(plan.emotions?.stressResponse),
+          emotional_support: folioLabel(plan.emotions?.emotionalNeed),
+          change_style: folioLabel(plan.emotions?.changeStyle),
+          preferred_format: folioLabel(plan.format, "Team to recommend"),
+          safety_flags: plan.safety ?? [],
+          questionnaire_version: "1.0",
+          safety_screen_version: "1.0",
+          consent: true,
+        }),
+      });
+      const result = await response.json().catch(() => ({})) as Partial<ConsultationSubmission> & { error?: string };
+      if (!response.ok || !result.folio_id) {
+        throw new Error(result.error || "The consultation could not be saved. Please try again.");
+      }
+
+      const saved = {
+        folio_id: result.folio_id,
+        whatsapp_url: result.whatsapp_url ?? null,
+      };
+      setSubmission(saved);
+      setSubmitted(true);
+      if (saved.whatsapp_url) window.location.assign(saved.whatsapp_url);
+    } catch (error) {
+      setSubmissionError(error instanceof Error ? error.message : "The consultation could not be saved. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -228,6 +254,7 @@ export default function ConnectPage() {
             <div className="mt-8 border border-[#6b4b2e]/18 bg-[#ead9bb] p-5 text-left">
               <p className="font-semibold text-[#294738]">Folio handover</p>
               <p className="mt-2 leading-7 text-[#66645a]">
+                Folio {submission?.folio_id}<br />
                 {name} · {phone}<br />
                 {city} · {languageLabel(language)} · Best time: {contactTime}
               </p>
@@ -235,16 +262,18 @@ export default function ConnectPage() {
             <div className="mt-8 border border-[#bd8a45]/40 bg-[#fff5df] p-5 text-left">
               <p className="font-semibold text-[#294738]">Complete the handover in WhatsApp</p>
               <p className="mt-2 text-sm leading-6 text-[#6d695e]">
-                WhatsApp should have opened with your folio addressed to +91 87912 48179. The message is sent only after you press Send in WhatsApp.
+                {submission?.whatsapp_url
+                  ? "WhatsApp should have opened with the saved folio. The message is sent only after you press Send in WhatsApp."
+                  : "Your folio is saved in AnjooraOps. WhatsApp handoff is unavailable until the Ops WhatsApp number is configured."}
               </p>
             </div>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Button asChild size="lg" className="h-13 rounded-sm px-7">
                 <Link href="/">Return home</Link>
               </Button>
-              <Button variant="outline" size="lg" className="h-13 rounded-sm border-[#20352a]/25 px-7" onClick={openWhatsAppHandover}>
+              {submission?.whatsapp_url && <Button variant="outline" size="lg" className="h-13 rounded-sm border-[#20352a]/25 px-7" onClick={() => window.location.assign(submission.whatsapp_url!)}>
                 Open WhatsApp again
-              </Button>
+              </Button>}
               <Button variant="outline" size="lg" className="h-13 rounded-sm border-[#20352a]/25 px-7" onClick={() => setSubmitted(false)}>
                 Edit request
               </Button>
@@ -358,8 +387,9 @@ export default function ConnectPage() {
                   <span>I agree that ANJOORA may use my wellness-profile answers and contact me on WhatsApp for review, recommendations and payment communication.</span>
                 </label>
 
-                <Button size="lg" className="mt-6 h-13 w-full rounded-sm bg-[#263f32] hover:bg-[#345241]" disabled={!ready} onClick={openWhatsAppHandover}>
-                  Send my folio for Vaidya review <ArrowRight />
+                {submissionError && <p role="alert" className="mt-5 border border-[#b83f37]/30 bg-[#fff0ec] p-4 text-sm font-semibold text-[#a5332d]">{submissionError}</p>}
+                <Button size="lg" className="mt-6 h-13 w-full rounded-sm bg-[#263f32] hover:bg-[#345241]" disabled={!ready || submitting} onClick={openWhatsAppHandover}>
+                  {submitting ? "Saving your folio…" : "Send my folio for Vaidya review"} {!submitting && <ArrowRight />}
                 </Button>
                 <p className="mt-3 flex items-center justify-center gap-2 text-xs text-[#6b7d75]">
                   <ShieldCheck className="size-4" /> No order is placed and no payment is collected here
@@ -430,6 +460,7 @@ function ProfileSummary({ plan }: { plan: WellnessPlan }) {
         <SummaryRow label="Daily rhythm" value={plan.dietLifestyle ? "Meals, sleep and rituals captured" : "Not yet captured"} />
         <SummaryRow label="Emotional pattern" value={plan.emotions ? "Stress response and change style captured" : "Not yet captured"} />
         <SummaryRow label="Format preference" value={plan.format ?? "Team to recommend"} />
+        <SummaryRow label="Safety screen" value={plan.safety?.includes("none") ? "No listed safety concern" : plan.safety?.length ? `${plan.safety.length} response(s) require review` : "Not yet captured"} />
       </div>
 
       <div className="mt-6 border border-[#d4a55f]/20 bg-[#fffaf0]/[.04] p-4">

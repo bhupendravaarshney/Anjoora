@@ -414,6 +414,7 @@ export default function AssessmentPage() {
   const savePlan = () => {
     if (!concern) return;
     const plan = {
+      submissionId: crypto.randomUUID(),
       concern: concern.name,
       concerns: selectedConcerns,
       formula: concern.formula,
@@ -425,6 +426,7 @@ export default function AssessmentPage() {
       dietLifestyle: { dietPattern, sleepPattern, rituals },
       emotions: { stressResponse, emotionalNeed, changeStyle },
       format,
+      safety,
       name,
       phone,
     };

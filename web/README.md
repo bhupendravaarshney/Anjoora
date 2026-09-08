@@ -2,6 +2,8 @@
 
 This is the production web application. Deploy this folder to one HTTPS domain and the same application can be installed from Chrome on Android and Safari on iPhone.
 
+For plain-language customer and staff instructions, see the [English and Hindi user handbook](../../AnjooraOps/docs/USER_HANDBOOK.md).
+
 ## Requirements
 
 - Node.js 22.13 or newer
@@ -11,7 +13,7 @@ This is the production web application. Deploy this folder to one HTTPS domain a
 ## Run locally
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -26,7 +28,7 @@ To test installation, deploy the `web` folder to an HTTPS preview/domain and ope
 ## Production build
 
 ```bash
-npm install
+npm ci
 npm run build
 npm start
 ```
@@ -59,24 +61,40 @@ The installed app opens in full-screen standalone mode. Consultation progress is
 
 ## WhatsApp handoff
 
-The current release uses a click-to-WhatsApp link for the official ANJOORA number. After completing the consultation, the customer receives a structured, prefilled folio containing personal details, present pattern, body and daily rhythm, inner climate, preparation preference, consent, and a clear request for human Vaidya review.
+The consultation is saved in AnjooraOps before WhatsApp opens. The Anjoora assessment carries one primary concern, up to three linked concerns, and the completed safety screen into the saved plan. The `/connect` page sends that structured payload to its server-side `/api/consultations` proxy, which then calls AnjooraOps.
 
-The customer must review the prefilled message and press **Send** in WhatsApp. No lead database or backend copy is created. A normal `wa.me` link supports prefilled text only; it cannot create native WhatsApp buttons, menus, automated replies, message-status handling, or a guided conversation.
+Configure the server-only Ops origin:
 
-### Future extension: WhatsApp Business Platform
+```bash
+cp .env.example .env.local
+```
 
-True interactive WhatsApp messages should be implemented as a separate backend integration. Do not place Meta access tokens in client-side code or `NEXT_PUBLIC_*` variables.
+```env
+ANJOORA_OPS_API_URL=http://localhost:3000
+ANJOORA_INTEGRATION_SECRET=<same server-only random value configured in AnjooraOps>
+```
 
-The future implementation will require:
+Do not expose either setting through a `NEXT_PUBLIC_*` variable. For local integration testing, run AnjooraOps on port `3000` and this frontend on port `3001`:
+
+```bash
+npm run dev -- -p 3001
+```
+
+If Ops persistence fails, the customer remains on the form and WhatsApp does not open. After a successful save, the customer reviews the prefilled message and presses **Send** in WhatsApp.
+
+### Connected WhatsApp operations
+
+AnjooraOps now provides signed Meta webhook intake, exact event deduplication, a durable message outbox, bounded retries, delivery/read/failure tracking, deterministic status intents, and human handoff. Do not place Meta access tokens in client-side code or `NEXT_PUBLIC_*` variables.
+
+Production activation still requires:
 
 1. A verified Meta Business portfolio and WhatsApp Business Account.
 2. The production phone-number ID, WhatsApp Business Account ID, and a server-side access token.
-3. A secure Next.js route handler or separate backend service for sending messages.
-4. A public HTTPS webhook with Meta verification and signature validation.
-5. Secure lead/consultation storage and a privacy/retention policy before transmitting sensitive wellness information automatically.
-6. Approved message templates for business-initiated conversations where Meta requires them.
-7. Webhook handling for customer replies, button selections, delivery status, retries, and duplicate events.
-8. Operational access for the ANJOORA team to review and continue conversations.
+3. The public AnjooraOps HTTPS webhook registered with Meta.
+4. Approved message templates for business-initiated dispatch, delivery, and refill conversations.
+5. A scheduler for the outbox/refill/maintenance jobs and alerts for delayed or dead jobs.
+6. Named operational staff with least-privilege roles, rotated passwords, and MFA.
+7. Provider-owned backups and retention/privacy approval described in the AnjooraOps operations runbook.
 
 Suggested first interactive acknowledgement:
 
