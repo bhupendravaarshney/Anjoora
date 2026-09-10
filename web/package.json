@@ -6,10 +6,13 @@
     "node": ">=22.13.0"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
+    "config:validate": "node scripts/validate-env.mjs",
+    "test": "node --test test/*.test.mjs",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint . --ignore-pattern .next"
+    "lint": "eslint . --ignore-pattern .next",
+    "verify": "npm run config:validate && npm test && npm run lint && npm run build"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

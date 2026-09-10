@@ -228,8 +228,18 @@ Also verify the following:
 
 Deploy and verify the HTTPS website first. Then follow `native-wrapper/README.md` if an Android Studio project, APK, Xcode project, or TestFlight build is required. Set `ANJOORA_APP_URL` to the final HTTPS domain before synchronizing the Capacitor project.
 
-## 8. Future interactive WhatsApp extension
+## 8. ANJOORA Ops consultation integration
 
-The current website intentionally uses a prefilled `wa.me` message and does not require a backend. Native WhatsApp reply buttons, selection lists, automated acknowledgements, and response tracking require the WhatsApp Business Platform, server-only Meta credentials, and HTTPS webhooks.
+The customer website now uses a small server-side integration layer for the final consultation handover. The browser posts the completed folio to `/api/consultations`; that server route authenticates to ANJOORA Ops with the private `ANJOORA_INTEGRATION_SECRET`, saves the consultation, receives the Ops identifiers, and only then opens the returned prefilled WhatsApp handoff.
 
-The implementation and security checklist is documented in `web/README.md` under **Future extension: WhatsApp Business Platform**. Keep the present click-to-WhatsApp flow available until the API integration has been configured, privacy-reviewed, and tested with the production ANJOORA WhatsApp Business account.
+Production variables for the ANJOORA web service:
+
+```env
+ANJOORA_OPS_URL=https://<your-anjoora-ops-domain>.up.railway.app
+ANJOORA_INTEGRATION_SECRET=<same private value configured in ANJOORA Ops>
+GO_LIVE=false
+```
+
+Never expose the integration secret through a `NEXT_PUBLIC_*` variable. ANJOORA must not connect directly to the Ops PostgreSQL database. ANJOORA Ops remains the owner of consultation persistence, folio/case IDs, safety state, operational workflow and WhatsApp operations.
+
+The exact integration and deployment notes are documented in `web/README.md`. Native WhatsApp reply buttons, automated acknowledgements and response tracking remain server-side ANJOORA Ops responsibilities and require the production WhatsApp Business Platform configuration.

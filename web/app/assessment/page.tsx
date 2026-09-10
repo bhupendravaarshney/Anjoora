@@ -13,6 +13,7 @@ import {
   HeartHandshake,
   Leaf,
   LockKeyhole,
+  RotateCcw,
   ShieldCheck,
 } from "lucide-react";
 
@@ -23,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { concerns, getConcern } from "@/lib/anjoora-data";
+import { CONSULTATION_DRAFT_KEY, CONSULTATION_PLAN_KEY } from "@/lib/consultation-storage";
 
 const durationOptions = [
   { value: "recent", label: "Recently", note: "Less than 4 weeks" },
@@ -140,8 +142,6 @@ const consultationChapters = [
   { title: "Preparation", note: "Format and safety" },
 ];
 
-const CONSULTATION_DRAFT_KEY = "anjoora-consultation-draft-v1";
-
 type ConsultationDraft = {
   step: number;
   selectedConcerns: string[];
@@ -233,7 +233,16 @@ export default function AssessmentPage() {
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      const requested = new URLSearchParams(window.location.search).get("concern");
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.get("fresh") === "1") {
+        window.localStorage.removeItem(CONSULTATION_DRAFT_KEY);
+        window.localStorage.removeItem(CONSULTATION_PLAN_KEY);
+        window.history.replaceState(window.history.state, "", "/assessment");
+        setDraftReady(true);
+        return;
+      }
+
+      const requested = searchParams.get("concern");
       if (requested && getConcern(requested)) {
         window.localStorage.removeItem(CONSULTATION_DRAFT_KEY);
         setSelectedConcerns([requested]);
@@ -430,24 +439,42 @@ export default function AssessmentPage() {
       name,
       phone,
     };
-    window.localStorage.setItem("anjoora-plan", JSON.stringify(plan));
-    window.localStorage.removeItem(CONSULTATION_DRAFT_KEY);
+    window.localStorage.setItem(CONSULTATION_PLAN_KEY, JSON.stringify(plan));
     setDraftStatus("idle");
     router.push("/connect");
   };
 
   const contactReady = name.trim().length >= 2 && phone.replace(/\D/g, "").length >= 10 && consent;
 
+  const startNewConsultation = () => {
+    const confirmed = window.confirm(
+      "Start a new consultation? Your saved answers and pending handover on this device will be permanently discarded. Consultations already sent to ANJOORA will remain in its records.",
+    );
+    if (!confirmed) return;
+
+    window.localStorage.removeItem(CONSULTATION_DRAFT_KEY);
+    window.localStorage.removeItem(CONSULTATION_PLAN_KEY);
+    window.location.replace("/assessment?fresh=1");
+  };
+
+  if (!draftReady) {
+    return (
+      <main className="min-h-screen overflow-x-clip bg-[#f2e8d2]" aria-busy="true">
+        <AssessmentHeader onStartNew={startNewConsultation} />
+        <section className="apothecary-paper flex min-h-[calc(100vh-5rem)] items-center justify-center px-5 py-16 sm:px-8">
+          <div role="status" className="text-center text-[#5d7169]">
+            <Clock3 className="mx-auto size-5 animate-pulse" aria-hidden="true" />
+            <p className="eyebrow mt-4 text-[#8b432d]">Opening your folio</p>
+            <p className="mt-2 text-sm">Restoring your private consultation draft on this device.</p>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen overflow-x-clip bg-[#f2e8d2]">
-      <header className="app-safe-header border-b border-[#6b4b2e]/22 bg-[#f1e5ce]">
-        <div className="mx-auto flex h-20 max-w-[1220px] items-center justify-between px-5 sm:px-8">
-          <BrandMark />
-          <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-[#62645b] hover:text-[#20352a]">
-            <ArrowLeft className="size-4" /> Exit consultation
-          </Link>
-        </div>
-      </header>
+      <AssessmentHeader onStartNew={startNewConsultation} />
 
       <div className="hidden border-b border-[#6b4b2e]/18 bg-[#fbf5e7] lg:block">
         <div className="mx-auto flex max-w-[1220px] items-center gap-4 px-5 py-4 sm:px-8">
@@ -752,6 +779,35 @@ export default function AssessmentPage() {
   );
 }
 
+function AssessmentHeader({ onStartNew }: { onStartNew: () => void }) {
+  return (
+    <header className="app-safe-header border-b border-[#6b4b2e]/22 bg-[#f1e5ce]">
+      <div className="mx-auto flex h-20 max-w-[1220px] items-center justify-between gap-3 px-5 sm:px-8">
+        <BrandMark />
+        <div className="flex items-center gap-1 sm:gap-3">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-10 rounded-sm px-2 text-[#8b432d] hover:bg-[#e8d8ba] hover:text-[#6f3323] sm:px-3"
+            onClick={onStartNew}
+            aria-label="Start a new consultation and discard this saved draft"
+          >
+            <RotateCcw className="size-4" />
+            <span className="hidden md:inline">Start new consultation</span>
+            <span className="md:hidden">Start new</span>
+          </Button>
+          <Link href="/" className="inline-flex h-10 items-center gap-2 px-2 text-sm font-medium text-[#62645b] hover:text-[#20352a] sm:px-3">
+            <ArrowLeft className="size-4" />
+            <span className="hidden sm:inline">Exit consultation</span>
+            <span className="sm:hidden">Exit</span>
+          </Link>
+        </div>
+      </div>
+    </header>
+  );
+}
+
 function QuestionBlock({
   title,
   note,
@@ -945,7 +1001,7 @@ function Result({
               </div>
               <label htmlFor="consent" className="flex cursor-pointer items-start gap-3 text-sm leading-6 text-[#5d7169]">
                 <Checkbox id="consent" checked={consent} onCheckedChange={(checked) => setConsent(checked === true)} className="mt-1" />
-                <span>I agree that ANJOORA may use these answers and contact me on WhatsApp about this apothecary brief.</span>
+                <span>I am ready to review the current contact consent on the final handover screen before submitting this apothecary brief.</span>
               </label>
               <Button size="lg" className="h-13 w-full rounded-sm bg-[#263f32] hover:bg-[#345241]" disabled={!contactReady} onClick={savePlan}>
                 {needsReview ? "Send for Vaidya safety review" : "Send my brief for Vaidya review"} <ArrowRight />

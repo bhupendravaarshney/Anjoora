@@ -19,6 +19,11 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+The development script intentionally uses Next.js's Webpack dev server. Keep the
+`--webpack` flag unless Turbopack has been revalidated against `/assessment`;
+Next.js 16.2.6 Turbopack can otherwise enter a continuous HMR reload loop on that
+route. Production builds already use Webpack as well.
+
 ### Important: installing on a phone
 
 Opening the development server from a phone at an address such as `http://192.168.x.x:3000` supports layout and interaction testing, but browsers do not allow PWA installation or service-worker registration from an insecure LAN HTTP origin. The Install button will explain that HTTPS is required.
@@ -29,11 +34,11 @@ To test installation, deploy the `web` folder to an HTTPS preview/domain and ope
 
 ```bash
 npm ci
-npm run build
+npm run verify
 npm start
 ```
 
-The production server uses port 3000 unless the hosting platform supplies another `PORT`.
+`verify` checks the server-only integration configuration, unit tests, lint, and the production build. The production server uses port 3000 unless the hosting platform supplies another `PORT`.
 
 ## PWA files that must remain public
 
@@ -70,11 +75,14 @@ cp .env.example .env.local
 ```
 
 ```env
-ANJOORA_OPS_API_URL=http://localhost:3000
+ANJOORA_OPS_URL=http://localhost:3000
 ANJOORA_INTEGRATION_SECRET=<same server-only random value configured in AnjooraOps>
+GO_LIVE=false
 ```
 
-Do not expose either setting through a `NEXT_PUBLIC_*` variable. For local integration testing, run AnjooraOps on port `3000` and this frontend on port `3001`:
+Use `ANJOORA_OPS_URL` as the canonical production variable. The code temporarily accepts the older `ANJOORA_OPS_API_URL` name only as a compatibility alias; do not configure both with different values.
+
+Run `npm run config:validate` in the deployment environment. Set `GO_LIVE=true` only for the release gate; validation then refuses localhost, insecure remote Ops endpoints, placeholder/reused secrets, and populated sensitive `NEXT_PUBLIC_*` variables. The shared integration-secret match is a required release-evidence check. For local integration testing, run AnjooraOps on port `3000` and this frontend on port `3001`:
 
 ```bash
 npm run dev -- -p 3001

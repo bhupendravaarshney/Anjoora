@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { CONSULTATION_DRAFT_KEY, CONSULTATION_PLAN_KEY, CONSULTATION_SUBMISSION_KEY } from "@/lib/consultation-storage";
 
 type WellnessPlan = {
   submissionId?: string;
@@ -52,8 +53,15 @@ type WellnessPlan = {
   };
 };
 
+type ConsentPolicy = { version: string; text: string };
+
 type ConsultationSubmission = {
+  ok: true;
+  customer_id: string;
+  consultation_id: string;
   folio_id: string;
+  case_id: string;
+  conversation_id?: string;
   whatsapp_url: string | null;
 };
 
@@ -140,13 +148,14 @@ export default function ConnectPage() {
   const [language, setLanguage] = useState("hinglish");
   const [contactTime, setContactTime] = useState("afternoon");
   const [consent, setConsent] = useState(false);
+  const [consentPolicy, setConsentPolicy] = useState<ConsentPolicy | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submissionError, setSubmissionError] = useState("");
   const [submission, setSubmission] = useState<ConsultationSubmission | null>(null);
 
   useEffect(() => {
-    const stored = window.localStorage.getItem("anjoora-plan");
+    const stored = window.localStorage.getItem(CONSULTATION_PLAN_KEY);
     if (!stored) return;
     try {
       const parsed = JSON.parse(stored) as WellnessPlan;
@@ -157,15 +166,37 @@ export default function ConnectPage() {
       }, 0);
       return () => window.clearTimeout(timer);
     } catch {
-      window.localStorage.removeItem("anjoora-plan");
+      window.localStorage.removeItem(CONSULTATION_PLAN_KEY);
     }
   }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/consultations", { cache: "no-store", signal: controller.signal })
+      .then(async (response) => {
+        const policy = await response.json() as Partial<ConsentPolicy> & { error?: string };
+        if (!response.ok || !policy.version || !policy.text) throw new Error(policy.error || "Consent policy is unavailable.");
+        setConsentPolicy({ version: policy.version, text: policy.text });
+      })
+      .catch((error) => {
+        if (error?.name !== "AbortError") setSubmissionError("The current consent text could not be loaded. Please try again.");
+      });
+    return () => controller.abort();
+  }, []);
+
+  const selectedConcerns = plan.concerns?.length
+    ? plan.concerns
+    : plan.concern
+      ? [plan.concern]
+      : [];
 
   const ready =
     name.trim().length >= 2 &&
     phone.replace(/\D/g, "").length >= 10 &&
     city.trim().length >= 2 &&
-    consent;
+    Boolean(plan.concern) &&
+    selectedConcerns.length > 0 &&
+    consent && Boolean(consentPolicy);
 
   const openWhatsAppHandover = async () => {
     if (!ready || submitting) return;
@@ -176,13 +207,9 @@ export default function ConnectPage() {
     if (!plan.submissionId) {
       const updatedPlan = { ...plan, submissionId };
       setPlan(updatedPlan);
-      window.localStorage.setItem("anjoora-plan", JSON.stringify(updatedPlan));
+      window.localStorage.setItem(CONSULTATION_PLAN_KEY, JSON.stringify(updatedPlan));
     }
-    const concerns = plan.concerns?.length
-      ? plan.concerns
-      : plan.concern
-        ? [plan.concern]
-        : [];
+    const concerns = selectedConcerns;
 
     try {
       const response = await fetch("/api/consultations", {
@@ -213,21 +240,50 @@ export default function ConnectPage() {
           safety_flags: plan.safety ?? [],
           questionnaire_version: "1.0",
           safety_screen_version: "1.0",
-          consent: true,
+          consent,
+          consent_version: consentPolicy?.version,
         }),
       });
       const result = await response.json().catch(() => ({})) as Partial<ConsultationSubmission> & { error?: string };
-      if (!response.ok || !result.folio_id) {
+      if (
+        !response.ok ||
+        result.ok !== true ||
+        !result.customer_id ||
+        !result.consultation_id ||
+        !result.folio_id ||
+        !result.case_id
+      ) {
         throw new Error(result.error || "The consultation could not be saved. Please try again.");
       }
 
-      const saved = {
+      const saved: ConsultationSubmission = {
+        ok: true,
+        customer_id: result.customer_id,
+        consultation_id: result.consultation_id,
         folio_id: result.folio_id,
+        case_id: result.case_id,
+        conversation_id: result.conversation_id,
         whatsapp_url: result.whatsapp_url ?? null,
       };
+      window.sessionStorage.setItem(
+        CONSULTATION_SUBMISSION_KEY,
+        JSON.stringify({
+          submission_id: submissionId,
+          customer_id: saved.customer_id,
+          consultation_id: saved.consultation_id,
+          folio_id: saved.folio_id,
+          case_id: saved.case_id,
+          conversation_id: saved.conversation_id ?? null,
+          saved_at: new Date().toISOString(),
+        }),
+      );
       setSubmission(saved);
       setSubmitted(true);
-      if (saved.whatsapp_url) window.location.assign(saved.whatsapp_url);
+      if (saved.whatsapp_url) {
+        window.localStorage.removeItem(CONSULTATION_DRAFT_KEY);
+        window.localStorage.removeItem(CONSULTATION_PLAN_KEY);
+        window.location.assign(saved.whatsapp_url);
+      }
     } catch (error) {
       setSubmissionError(error instanceof Error ? error.message : "The consultation could not be saved. Please try again.");
     } finally {
@@ -383,8 +439,8 @@ export default function ConnectPage() {
                 </div>
 
                 <label htmlFor="connect-consent" className="mt-6 flex cursor-pointer items-start gap-3 text-sm leading-6 text-[#5d7169]">
-                  <Checkbox id="connect-consent" checked={consent} onCheckedChange={(checked) => setConsent(checked === true)} className="mt-1" />
-                  <span>I agree that ANJOORA may use my wellness-profile answers and contact me on WhatsApp for review, recommendations and payment communication.</span>
+                  <Checkbox id="connect-consent" checked={consent} disabled={!consentPolicy} onCheckedChange={(checked) => setConsent(checked === true)} className="mt-1" />
+                  <span>{consentPolicy?.text || "Loading the current consent text…"}</span>
                 </label>
 
                 {submissionError && <p role="alert" className="mt-5 border border-[#b83f37]/30 bg-[#fff0ec] p-4 text-sm font-semibold text-[#a5332d]">{submissionError}</p>}
