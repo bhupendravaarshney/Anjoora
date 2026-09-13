@@ -2,6 +2,12 @@ import Link from "next/link";
 
 import { BrandSignature } from "@/components/brand-mark";
 
+const businessPhone = {
+  display: "+91 95576 27177",
+  e164: "+919557627177",
+  whatsapp: "https://wa.me/919557627177",
+};
+
 export function SiteFooter() {
   return (
     <footer className="apothecary-wood px-5 pb-28 pt-16 text-[#fffaf0] sm:px-8 md:pb-8 lg:px-14">
@@ -26,6 +32,8 @@ export function SiteFooter() {
             <p className="eyebrow text-[#d4a55f]">Trust</p>
             <div className="mt-5 flex flex-col gap-3 text-[#fffaf0]/70">
               <Link href="/standards" className="hover:text-[#fffaf0]">Our wellness standard</Link>
+              <a href={`tel:${businessPhone.e164}`} className="hover:text-[#fffaf0]">Business: {businessPhone.display}</a>
+              <a href={businessPhone.whatsapp} target="_blank" rel="noopener noreferrer" className="hover:text-[#fffaf0]">WhatsApp: {businessPhone.display}</a>
               <a href="mailto:care@anjoora.com" className="hover:text-[#fffaf0]">care@anjoora.com</a>
               <span>Privacy & terms</span>
             </div>
