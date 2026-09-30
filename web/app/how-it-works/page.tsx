@@ -12,13 +12,12 @@ import {
   Leaf,
   MessageCircle,
   PackageCheck,
-  PackageOpen,
   RotateCcw,
   Scale,
   ShieldAlert,
   ShieldCheck,
   Sparkles,
-  Stamp,
+  Stethoscope,
   Truck,
   UserRoundCheck,
 } from "lucide-react";
@@ -28,8 +27,9 @@ import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "The Complete Journey",
-  description: "Follow the complete ANJOORA flow from digital consultation and Vaidya review to WhatsApp acceptance, secure payment, preparation, dispatch and follow-up.",
+  title: "How ANJOORA Works",
+  description:
+    "See how ANJOORA organises the whole-person context, protects medical priorities, supports qualified Vaidya review, integrates selectively and follows through.",
 };
 
 type FlowStep = {
@@ -39,47 +39,195 @@ type FlowStep = {
   icon: LucideIcon;
 };
 
+type PathwayTone = "medical" | "coordinate" | "ayurveda" | "apothecary" | "none";
+
 const phases = [
-  ["I", "Digital folio", "Website"],
-  ["II", "Vaidya review", "Human review"],
-  ["III", "Recommendation", "WhatsApp"],
-  ["IV", "Payment & making", "WhatsApp + apothecary"],
-  ["V", "Delivery & care", "WhatsApp"],
+  ["I", "Build the folio", "Website"],
+  ["II", "Safety & context", "Review"],
+  ["III", "Choose the pathway", "Human decision"],
+  ["IV", "Act selectively", "Care / Apothecary"],
+  ["V", "Review & follow-up", "Ongoing"],
 ];
 
-const digitalSteps: FlowStep[] = [
-  { code: "01", title: "Choose concerns", copy: "Select up to four concerns and identify the one priority that matters most now.", icon: ClipboardList },
-  { code: "02", title: "Complete six grouped folios", copy: "Add the current pattern, body tendencies, diet, lifestyle rituals, emotions, psychology and preferred format.", icon: FileCheck2 },
-  { code: "03", title: "Complete the safety screen", copy: "Share medicines, allergies, pregnancy, age and any urgent or concerning symptoms.", icon: ShieldCheck },
-  { code: "04", title: "Receive your apothecary brief", copy: "The website organises your answers into one readable record; it does not prescribe or place an order.", icon: Sparkles },
+const folioSteps: FlowStep[] = [
+  {
+    code: "01",
+    title: "Start with what matters now",
+    copy:
+      "Choose the concerns you want considered and identify the one priority that matters most right now.",
+    icon: ClipboardList,
+  },
+  {
+    code: "02",
+    title: "Complete one guided folio",
+    copy:
+      "Six grouped sections organise your present pattern, body tendencies, daily rhythm, inner context, preferred format and safety information.",
+    icon: FileCheck2,
+  },
+  {
+    code: "03",
+    title: "Add existing-care context",
+    copy:
+      "Tell us whether prescription medicines, allergies, pregnancy or breastfeeding, childhood, or urgent symptoms apply so the next step can be reviewed more safely.",
+    icon: ShieldCheck,
+  },
+  {
+    code: "04",
+    title: "The website organises—not prescribes",
+    copy:
+      "Your answers become one readable ANJOORA folio. The website does not diagnose, prescribe, select treatment or automatically create a product list.",
+    icon: Sparkles,
+  },
 ];
 
 const reviewSteps: FlowStep[] = [
-  { code: "05", title: "Folio completeness check", copy: "The team confirms that the answers and WhatsApp contact details are complete enough for review.", icon: ClipboardCheck },
-  { code: "06", title: "Vaidya reads the whole pattern", copy: "The primary concern is reviewed alongside linked concerns, body rhythm, daily life, emotional context and format preference.", icon: UserRoundCheck },
-  { code: "07", title: "Suitability and safety check", copy: "The reviewer checks whether a wellness recommendation is appropriate or whether clarification, medical review or referral should come first.", icon: Scale },
-  { code: "08", title: "Recommendation is prepared", copy: "Only suitable products or preparations are selected, with a purpose, directions, quantity, cautions and review period.", icon: Leaf },
+  {
+    code: "05",
+    title: "Completeness check",
+    copy:
+      "The team checks whether the folio and contact information are complete enough for responsible human review.",
+    icon: ClipboardCheck,
+  },
+  {
+    code: "06",
+    title: "Read the whole context",
+    copy:
+      "The reviewer considers the primary concern alongside linked concerns, current pattern, body context, daily life, safety information and patient preferences.",
+    icon: UserRoundCheck,
+  },
+  {
+    code: "07",
+    title: "Protect medical priorities",
+    copy:
+      "The reviewer checks whether the situation needs clarification, medical assessment, continued medical treatment, referral or another professional to lead first.",
+    icon: Scale,
+  },
+  {
+    code: "08",
+    title: "Decide what should lead next",
+    copy:
+      "The outcome is not automatically a product. The next step may be medical review, coordinated support, Ayurveda-guided routine changes, an Apothecary preparation, or no additional intervention.",
+    icon: HeartHandshake,
+  },
 ];
 
-const whatsappSteps: FlowStep[] = [
-  { code: "09", title: "Recommendation reaches WhatsApp", copy: "The customer receives the reviewed product list, why each item was selected, directions, quantity and total amount.", icon: MessageCircle },
-  { code: "10", title: "Customer asks, changes or accepts", copy: "The customer can ask questions, request a revision, accept the plan or decline without placing an order.", icon: HeartHandshake },
-  { code: "11", title: "Secure payment link is issued", copy: "Only an accepted recommendation receives the approved payment link. Payment details are never collected in the consultation form.", icon: CreditCard },
-  { code: "12", title: "Payment is confirmed", copy: "A successful payment creates the confirmed request and a reference number. An unsuccessful payment does not release making or dispatch.", icon: Stamp },
+const pathways: {
+  code: string;
+  title: string;
+  copy: string;
+  tone: PathwayTone;
+  icon: LucideIcon;
+}[] = [
+  {
+    code: "A",
+    title: "Medical assessment first",
+    copy:
+      "When symptoms, uncertainty or risk require diagnosis, investigation or urgent care, the medical pathway leads before an Apothecary decision.",
+    tone: "medical",
+    icon: Stethoscope,
+  },
+  {
+    code: "B",
+    title: "Continue medical care + coordinate",
+    copy:
+      "Existing treatment remains foundational while an appropriate supportive contribution is considered around it.",
+    tone: "coordinate",
+    icon: HeartHandshake,
+  },
+  {
+    code: "C",
+    title: "Ayurveda-guided routine support",
+    copy:
+      "Diet, sleep, daily rhythm, movement or another non-product intervention may be the most useful next step.",
+    tone: "ayurveda",
+    icon: Leaf,
+  },
+  {
+    code: "D",
+    title: "Apothecary preparation",
+    copy:
+      "A preparation may be considered when there is a defined purpose, acceptable safety context and a clear plan for use and review.",
+    tone: "apothecary",
+    icon: PackageCheck,
+  },
+  {
+    code: "E",
+    title: "Nothing additional now",
+    copy:
+      "Sometimes the responsible decision is not to add another therapy, product or ritual at this stage.",
+    tone: "none",
+    icon: ShieldCheck,
+  },
 ];
 
-const makingSteps: FlowStep[] = [
-  { code: "13", title: "The paid request is released", copy: "The confirmed recommendation, quantity, customer details and delivery instructions move to the authorised fulfilment team.", icon: PackageOpen },
-  { code: "14", title: "Preparation or allocation begins", copy: "The approved item is prepared where lawful and licensed, or allocated from an approved finished-product batch according to its category.", icon: Leaf },
-  { code: "15", title: "Quality and identity are checked", copy: "The team verifies the correct item, batch or preparation record, quantity, condition, label details and applicable quality checks.", icon: PackageCheck },
-  { code: "16", title: "Label, pack and release", copy: "Directions, cautions, customer reference and traceability details are checked before the package is sealed for dispatch.", icon: ShieldCheck },
-  { code: "17", title: "Dispatch update is shared", copy: "The customer receives the dispatch status and available tracking information through WhatsApp.", icon: Truck },
+const apothecarySteps: FlowStep[] = [
+  {
+    code: "09",
+    title: "The reviewed proposal is explained",
+    copy:
+      "If a preparation is appropriate, the person receives what is proposed, why it is being considered, how to use it, relevant cautions, quantity, review period and price.",
+    icon: MessageCircle,
+  },
+  {
+    code: "10",
+    title: "Ask, change, accept or decline",
+    copy:
+      "The person can ask questions, request a revision, accept the proposal, decline it or decide later. No order is created simply because a recommendation exists.",
+    icon: HeartHandshake,
+  },
+  {
+    code: "11",
+    title: "Payment follows acceptance",
+    copy:
+      "A secure payment link is issued only when an accepted paid preparation or service requires payment. Payment details are not collected in the consultation form.",
+    icon: CreditCard,
+  },
+  {
+    code: "12",
+    title: "Preparation and quality release",
+    copy:
+      "The approved item is prepared where lawful and licensed, or allocated from approved stock, then checked for identity, quantity, label details, traceability and applicable quality requirements.",
+    icon: PackageCheck,
+  },
+  {
+    code: "13",
+    title: "Dispatch and guidance",
+    copy:
+      "Where a physical product is supplied, dispatch information and clear use guidance are shared through the agreed communication channel.",
+    icon: Truck,
+  },
 ];
 
-const careSteps: FlowStep[] = [
-  { code: "18", title: "Delivery is confirmed", copy: "The customer can report a delivery problem, damaged pack or mismatch before beginning the ritual.", icon: PackageCheck },
-  { code: "19", title: "Use guidance is reinforced", copy: "WhatsApp guidance repeats how and when to use the product, what to avoid and when to pause.", icon: MessageCircle },
-  { code: "20", title: "Follow-up closes the loop", copy: "A planned check-in records experience, adherence, questions and any need to continue, revise, pause or seek medical review.", icon: RotateCcw },
+const followUpSteps: FlowStep[] = [
+  {
+    code: "14",
+    title: "Check what actually happened",
+    copy:
+      "Follow-up records whether the plan was practical, used as intended, tolerated and still relevant to the original goal.",
+    icon: ClipboardCheck,
+  },
+  {
+    code: "15",
+    title: "Review the response",
+    copy:
+      "Questions, changes, unexpected effects, adherence and the need for further assessment are considered rather than assuming the original plan should continue.",
+    icon: RotateCcw,
+  },
+  {
+    code: "16",
+    title: "Continue, change, pause or escalate",
+    copy:
+      "The next decision may be to continue, modify, stop, seek medical review or move to another appropriate professional pathway.",
+    icon: ShieldCheck,
+  },
+];
+
+const controlPoints = [
+  "Safety before integration",
+  "Clear responsibility for every decision",
+  "A defined reason before adding an intervention",
+  "Understanding before acceptance",
+  "Review after intervention",
 ];
 
 export default function HowItWorksPage() {
@@ -87,29 +235,56 @@ export default function HowItWorksPage() {
     <main>
       <SiteHeader />
 
+      {/* HERO */}
       <section className="apothecary-wood px-5 py-18 text-[#fffaf0] sm:px-8 lg:px-14 lg:py-26">
         <div className="mx-auto max-w-[1260px]">
-          <div className="grid gap-10 lg:grid-cols-[1.1fr_.9fr] lg:items-end">
+          <div className="grid gap-10 lg:grid-cols-[1.08fr_.92fr] lg:items-end">
             <div>
-              <p className="eyebrow text-[#d4a55f]">The complete ANJOORA journey</p>
-              <h1 className="font-display mt-6 max-w-5xl text-[clamp(3.6rem,7vw,7.4rem)] leading-[.86] tracking-[-.052em]">
-                From your first answer to the final follow-up.
+              <p className="eyebrow text-[#d4a55f]">How ANJOORA works</p>
+              <h1 className="font-display mt-6 max-w-5xl text-[clamp(3.6rem,7vw,7.2rem)] leading-[.86] tracking-[-.052em]">
+                One person. One complete context. The right next step.
               </h1>
             </div>
+
             <div className="border-l border-[#d4a55f]/35 pl-6 sm:pl-8">
-              <p className="text-lg leading-8 text-[#fffaf0]/68">The website creates the folio. The Vaidya creates the recommendation. WhatsApp carries consent and payment. Making begins only after payment confirmation.</p>
-              <Button asChild size="lg" className="mt-7 h-14 rounded-sm bg-[#c3914c] px-7 text-[#1d1711] hover:bg-[#d2a45f]">
-                <Link href="/assessment">Begin my consultation <ArrowRight /></Link>
+              <p className="text-lg leading-8 text-[#fffaf0]/68">
+                ANJOORA organises the story, protects medical priorities,
+                supports qualified human reasoning and integrates selectively.
+                The destination is not automatically a product.
+              </p>
+
+              <div className="mt-6 space-y-2 text-sm font-semibold text-[#fffaf0]/72">
+                <p>Understand first.</p>
+                <p>Decide second.</p>
+                <p>Integrate only when there is a reason.</p>
+                <p>Follow through.</p>
+              </div>
+
+              <Button
+                asChild
+                size="lg"
+                className="mt-7 h-14 rounded-sm bg-[#c3914c] px-7 text-[#1d1711] hover:bg-[#d2a45f]"
+              >
+                <Link href="/assessment">
+                  Create my ANJOORA folio <ArrowRight />
+                </Link>
               </Button>
             </div>
           </div>
 
           <div className="mt-12 grid border-l border-t border-[#d4a55f]/24 sm:grid-cols-2 lg:grid-cols-5">
             {phases.map(([number, title, channel]) => (
-              <div key={number} className="border-b border-r border-[#d4a55f]/24 bg-[#fffaf0]/[.03] p-5">
+              <div
+                key={number}
+                className="border-b border-r border-[#d4a55f]/24 bg-[#fffaf0]/[.03] p-5"
+              >
                 <div className="flex items-center justify-between">
-                  <span className="font-display text-xl text-[#d4a55f]">{number}</span>
-                  <span className="text-xs font-bold uppercase tracking-[.12em] text-[#fffaf0]/38">{channel}</span>
+                  <span className="font-display text-xl text-[#d4a55f]">
+                    {number}
+                  </span>
+                  <span className="text-xs font-bold uppercase tracking-[.12em] text-[#fffaf0]/38">
+                    {channel}
+                  </span>
                 </div>
                 <p className="font-display mt-6 text-2xl">{title}</p>
               </div>
@@ -118,75 +293,236 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      <section className="apothecary-paper px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
-        <div className="mx-auto max-w-[1200px]">
-          <SectionIntro eyebrow="Phase I · Website" title="Your answers become one organised folio." copy="The customer completes six grouped screens—not a long chain of isolated questions. The website collects context and checks safety; it never creates the final product list." />
-          <FlowPhase steps={digitalSteps} />
-
-          <FlowConnector label="Safety decision" />
-          <div className="grid gap-3 md:grid-cols-3">
-            <BranchCard tone="stop" title="Urgent symptom" copy="Stop the wellness flow and direct the person to appropriate urgent medical assessment." />
-            <BranchCard tone="hold" title="Medication or special situation" copy="Hold the product decision for qualified review, clarification or medical coordination." />
-            <BranchCard tone="continue" title="Everyday wellness context" copy="Complete the apothecary brief and continue to Vaidya review." />
+      {/* PERSON FIRST */}
+      <section className="bg-[#e7d8bd] px-5 py-20 sm:px-8 lg:px-14 lg:py-24">
+        <div className="mx-auto grid max-w-[1180px] gap-10 lg:grid-cols-[.76fr_1.24fr]">
+          <div>
+            <p className="eyebrow text-[#8b432d]">Before the pathway</p>
+            <h2 className="font-display mt-4 text-5xl leading-[.94] tracking-[-.04em] text-[#20352a]">
+              The journey starts with the person—not with a modality.
+            </h2>
           </div>
 
-          <FlowConnector label="Qualified human review" />
-          <SectionIntro eyebrow="Phase II · Vaidya review" title="The product suggestion begins only here." copy="The reviewer reads the complete picture, checks whether a recommendation is appropriate and documents why each item belongs in the plan." />
-          <FlowPhase steps={reviewSteps} />
+          <div className="space-y-5 text-lg leading-8 text-[#62645a]">
+            <p>
+              People rarely arrive as a blank page. They may already have
+              diagnoses, reports, prescription medicines, specialist advice,
+              previous treatment, daily-life constraints and their own ideas
+              about what they want to explore.
+            </p>
+            <p>
+              ANJOORA begins by organising that relevant context before asking
+              whether modern medicine, Ayurveda, an Apothecary preparation,
+              another supportive approach—or no additional intervention—should
+              come next.
+            </p>
 
-          <FlowConnector label="Reviewed recommendation" />
-          <RecommendationPreview />
-
-          <FlowConnector label="Customer conversation" />
-          <SectionIntro eyebrow="Phase III · WhatsApp" title="Understand first. Accept second. Pay third." copy="WhatsApp is the discussion and agreement layer. The customer sees the recommendation and total amount before a payment link is issued." />
-          <FlowPhase steps={whatsappSteps} />
-
-          <div className="mt-7 grid gap-3 md:grid-cols-3">
-            <BranchCard tone="continue" title="Accept" copy="The secure payment link is issued for the accepted recommendation." />
-            <BranchCard tone="hold" title="Request a change" copy="The request returns to the reviewer; the updated recommendation is shared again before payment." />
-            <BranchCard tone="neutral" title="Decline or decide later" copy="The conversation closes or pauses. No payment, making or order is created." />
+            <div className="border-l-2 border-[#31513e] bg-[#f7ecd7] px-6 py-5">
+              <p className="font-display text-3xl leading-tight text-[#20352a]">
+                Patient before modality. Context before addition.
+              </p>
+            </div>
           </div>
-
-          <FlowConnector label="Payment confirmed" />
-          <SectionIntro eyebrow="Phase IV · Apothecary operations" title="Making begins only after a confirmed request." copy="A paid request moves through preparation or approved stock allocation, verification, labelling, packing and dispatch. The path depends on the product’s regulatory category." />
-          <FlowPhase steps={makingSteps} columns="five" />
-
-          <div className="mt-7 border border-[#8b432d]/25 bg-[#fff4df] p-5 sm:p-6">
-            <p className="flex items-start gap-3 text-sm leading-6 text-[#625f55]"><ShieldAlert className="mt-0.5 size-5 shrink-0 text-[#8b432d]" /> “Personalised” may mean selecting the right approved product, combination, format, timing and quantity. Custom manufacture or compounding must occur only where the product category, licence, facility and approved procedure permit it.</p>
-          </div>
-
-          <FlowConnector label="Package delivered" />
-          <SectionIntro eyebrow="Phase V · Continued care" title="The journey does not end at dispatch." copy="Delivery support, clear use guidance and a planned follow-up help the customer use the ritual correctly and know when to pause or seek help." />
-          <FlowPhase steps={careSteps} />
         </div>
       </section>
 
-      <section className="bg-[#e7d8bd] px-5 py-20 sm:px-8 lg:px-14 lg:py-24">
-        <div className="mx-auto grid max-w-[1180px] gap-8 lg:grid-cols-[.85fr_1.15fr]">
-          <div>
-            <p className="eyebrow text-[#8b432d]">Control points</p>
-            <h2 className="font-display mt-4 text-5xl leading-[.94] tracking-[-.04em] text-[#20352a]">Five things must never be skipped.</h2>
+      {/* PHASE I */}
+      <section className="apothecary-paper px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
+        <div className="mx-auto max-w-[1200px]">
+          <SectionIntro
+            eyebrow="Phase I · Build the ANJOORA folio"
+            title="One folio. Six guided sections. One readable context."
+            copy="The website helps organise information into a structured record for human review. It does not diagnose, prescribe or decide treatment."
+          />
+          <FlowPhase steps={folioSteps} />
+
+          <FlowConnector label="Safety and context review" />
+
+          <div className="grid gap-3 md:grid-cols-3">
+            <BranchCard
+              tone="stop"
+              title="Concerning or urgent symptom"
+              copy="The wellness pathway stops. Appropriate medical assessment should lead."
+            />
+            <BranchCard
+              tone="hold"
+              title="Medicines or special situation"
+              copy="The decision is held for clarification, qualified review or medical coordination before anything new is added."
+            />
+            <BranchCard
+              tone="continue"
+              title="Suitable for further review"
+              copy="The folio continues to qualified human review. This still does not guarantee that a product will be recommended."
+            />
           </div>
-          <div className="divide-y divide-[#6b4b2e]/20 border-y border-[#6b4b2e]/20">
-            {["Safety review before recommendation", "Customer acceptance before payment link", "Payment confirmation before making", "Quality release before dispatch", "Clear pause and escalation guidance after delivery"].map((item, index) => (
-              <p key={item} className="grid grid-cols-[2rem_1fr] gap-4 py-4 text-[#555d52]"><span className="font-display text-[#8b432d]">0{index + 1}</span>{item}</p>
+        </div>
+      </section>
+
+      {/* PHASE II */}
+      <section className="bg-[#f8f0df] px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
+        <div className="mx-auto max-w-[1200px]">
+          <SectionIntro
+            eyebrow="Phase II · Human review"
+            title="The decision begins here—not the product."
+            copy="The reviewer looks at the whole available context, protects medical priorities and decides what deserves attention first."
+          />
+          <FlowPhase steps={reviewSteps} />
+        </div>
+      </section>
+
+      {/* PHASE III: PATHWAYS */}
+      <section className="bg-[#e7d8bd] px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
+        <div className="mx-auto max-w-[1260px]">
+          <div className="text-center">
+            <p className="eyebrow text-[#8b432d]">Phase III · Choose the pathway</p>
+            <h2 className="font-display mx-auto mt-4 max-w-4xl text-5xl leading-[.94] tracking-[-.043em] text-[#20352a] sm:text-6xl">
+              A responsible review can lead to different outcomes.
+            </h2>
+            <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-[#62645a]">
+              ANJOORA should not behave like a funnel in which every person ends
+              with a product. The right pathway depends on what the context
+              actually shows.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+            {pathways.map((pathway) => (
+              <PathwayCard key={pathway.code} {...pathway} />
             ))}
           </div>
         </div>
       </section>
 
+      {/* COORDINATED PLAN */}
+      <section className="apothecary-wood px-5 py-20 text-[#fffaf0] sm:px-8 lg:px-14 lg:py-28">
+        <div className="mx-auto max-w-[1180px]">
+          <p className="eyebrow text-[#d4a55f]">The ANJOORA decision layer</p>
+          <h2 className="font-display mt-4 max-w-5xl text-5xl leading-[.94] tracking-[-.043em] sm:text-6xl">
+            The aim is not maximum integration. It is the minimum necessary,
+            clearly justified integration.
+          </h2>
+
+          <div className="mt-10 grid gap-4 lg:grid-cols-3">
+            <PrincipleCard
+              title="What must continue?"
+              copy="Necessary medical treatment, investigations and monitoring remain protected."
+            />
+            <PrincipleCard
+              title="What may be added?"
+              copy="Only an intervention with a defined purpose, appropriate scope and acceptable safety context should enter the plan."
+            />
+            <PrincipleCard
+              title="Who owns the next step?"
+              copy="The person should understand which professional is responsible, what happens next and when the plan will be reviewed."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* PHASE IV: APOTHECARY ONLY IF APPROPRIATE */}
+      <section className="apothecary-paper px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
+        <div className="mx-auto max-w-[1200px]">
+          <SectionIntro
+            eyebrow="Phase IV · If an Apothecary preparation is appropriate"
+            title="The Apothecary follows the decision."
+            copy="Only after a preparation has a defined reason to be considered should the process move into explanation, acceptance, payment and fulfilment."
+          />
+
+          <FlowPhase steps={apothecarySteps} columns="five" />
+
+          <div className="mt-7 border border-[#8b432d]/25 bg-[#fff4df] p-5 sm:p-6">
+            <p className="flex items-start gap-3 text-sm leading-6 text-[#625f55]">
+              <ShieldAlert className="mt-0.5 size-5 shrink-0 text-[#8b432d]" />
+              “Personalised” may mean selecting the most appropriate approved
+              product, combination, format, timing, quantity or guidance.
+              Custom manufacture or compounding should occur only where the
+              product category, licence, facility and approved procedure permit
+              it.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-3 md:grid-cols-4">
+            <DecisionChip title="Accept" copy="Proceed to the agreed next step." />
+            <DecisionChip title="Ask" copy="Clarify purpose, use, cautions or alternatives." />
+            <DecisionChip title="Request a change" copy="Return the proposal for review before payment." />
+            <DecisionChip title="Decline / not now" copy="No order is created." />
+          </div>
+        </div>
+      </section>
+
+      {/* PHASE V */}
+      <section className="bg-[#f8f0df] px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
+        <div className="mx-auto max-w-[1200px]">
+          <SectionIntro
+            eyebrow="Phase V · Review and follow-up"
+            title="The journey does not end when a recommendation is made."
+            copy="Follow-up checks what actually happened and whether the original plan still deserves to continue."
+          />
+
+          <FlowPhase steps={followUpSteps} />
+
+          <div className="mt-10 border-l-2 border-[#31513e] bg-[#e8eee4] px-6 py-5">
+            <p className="font-display text-3xl leading-tight text-[#20352a]">
+              Review is part of the intervention—not an optional afterthought.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* CONTROL POINTS */}
+      <section className="bg-[#e7d8bd] px-5 py-20 sm:px-8 lg:px-14 lg:py-24">
+        <div className="mx-auto grid max-w-[1180px] gap-8 lg:grid-cols-[.85fr_1.15fr]">
+          <div>
+            <p className="eyebrow text-[#8b432d]">Five control points</p>
+            <h2 className="font-display mt-4 text-5xl leading-[.94] tracking-[-.04em] text-[#20352a]">
+              Five things ANJOORA should never skip.
+            </h2>
+          </div>
+
+          <div className="divide-y divide-[#6b4b2e]/20 border-y border-[#6b4b2e]/20">
+            {controlPoints.map((item, index) => (
+              <p
+                key={item}
+                className="grid grid-cols-[2rem_1fr] gap-4 py-4 text-[#555d52]"
+              >
+                <span className="font-display text-[#8b432d]">
+                  0{index + 1}
+                </span>
+                {item}
+              </p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CTA */}
       <section className="bg-[#8b432d] px-5 py-16 text-[#fffaf0] sm:px-8 lg:px-14 lg:py-20">
         <div className="mx-auto grid max-w-[1180px] gap-7 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
-            <p className="eyebrow text-[#e3bd7d]">Explore the complete system</p>
-            <h2 className="font-display mt-4 text-5xl leading-[.94] tracking-[-.04em] sm:text-6xl">See what guides every recommendation and preparation.</h2>
+            <p className="eyebrow text-[#e3bd7d]">Begin with your complete context</p>
+            <h2 className="font-display mt-4 max-w-4xl text-5xl leading-[.94] tracking-[-.04em] sm:text-6xl">
+              The next step should begin with understanding—not with a product.
+            </h2>
           </div>
+
           <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-            <Button asChild size="lg" className="h-14 rounded-sm bg-[#f0d49f] px-7 text-[#251a12] hover:bg-[#f7e1b8]">
-              <Link href="/standards">Read our standard <ArrowRight /></Link>
+            <Button
+              asChild
+              size="lg"
+              className="h-14 rounded-sm bg-[#f0d49f] px-7 text-[#251a12] hover:bg-[#f7e1b8]"
+            >
+              <Link href="/assessment">
+                Create my ANJOORA folio <ArrowRight />
+              </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="h-14 rounded-sm border-[#f0d49f]/40 bg-transparent px-7 text-[#fffaf0] hover:bg-[#fffaf0]/8 hover:text-[#fffaf0]">
-              <Link href="/apothecary">Explore the apothecary</Link>
+
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="h-14 rounded-sm border-[#f0d49f]/40 bg-transparent px-7 text-[#fffaf0] hover:bg-[#fffaf0]/8 hover:text-[#fffaf0]"
+            >
+              <Link href="/apothecary">Understand the Apothecary</Link>
             </Button>
           </div>
         </div>
@@ -197,32 +533,70 @@ export default function HowItWorksPage() {
   );
 }
 
-function SectionIntro({ eyebrow, title, copy }: { eyebrow: string; title: string; copy: string }) {
+function SectionIntro({
+  eyebrow,
+  title,
+  copy,
+}: {
+  eyebrow: string;
+  title: string;
+  copy: string;
+}) {
   return (
     <div className="grid gap-5 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
       <div>
         <p className="eyebrow text-[#8b432d]">{eyebrow}</p>
-        <h2 className="font-display mt-4 text-4xl leading-[.96] tracking-[-.04em] text-[#20352a] sm:text-5xl">{title}</h2>
+        <h2 className="font-display mt-4 text-4xl leading-[.96] tracking-[-.04em] text-[#20352a] sm:text-5xl">
+          {title}
+        </h2>
       </div>
-      <p className="max-w-2xl text-lg leading-8 text-[#66645a] lg:justify-self-end">{copy}</p>
+      <p className="max-w-2xl text-lg leading-8 text-[#66645a] lg:justify-self-end">
+        {copy}
+      </p>
     </div>
   );
 }
 
-function FlowPhase({ steps, columns = "four" }: { steps: FlowStep[]; columns?: "four" | "five" }) {
+function FlowPhase({
+  steps,
+  columns = "four",
+}: {
+  steps: FlowStep[];
+  columns?: "four" | "five";
+}) {
   return (
-    <div className={`mt-8 grid border-l border-t border-[#6b4b2e]/20 sm:grid-cols-2 ${columns === "five" ? "xl:grid-cols-5" : "lg:grid-cols-4"}`}>
+    <div
+      className={`mt-8 grid border-l border-t border-[#6b4b2e]/20 sm:grid-cols-2 ${
+        columns === "five" ? "xl:grid-cols-5" : "lg:grid-cols-4"
+      }`}
+    >
       {steps.map((step, index) => {
         const Icon = step.icon;
+
         return (
-          <article key={step.code} className="relative min-h-64 border-b border-r border-[#6b4b2e]/20 bg-[#fbf5e7]/72 p-6">
+          <article
+            key={step.code}
+            className="relative min-h-64 border-b border-r border-[#6b4b2e]/20 bg-[#fbf5e7]/72 p-6"
+          >
             <div className="flex items-center justify-between">
-              <span className="font-display text-xl text-[#8b432d]">{step.code}</span>
+              <span className="font-display text-xl text-[#8b432d]">
+                {step.code}
+              </span>
               <Icon className="size-5 text-[#31513e]" />
             </div>
-            <h3 className="font-display mt-8 text-3xl leading-[1.02] tracking-[-.025em] text-[#20352a]">{step.title}</h3>
+
+            <h3 className="font-display mt-8 text-3xl leading-[1.02] tracking-[-.025em] text-[#20352a]">
+              {step.title}
+            </h3>
             <p className="mt-3 leading-7 text-[#69675d]">{step.copy}</p>
-            {index < steps.length - 1 && <ArrowRight className={`absolute -right-3 top-7 z-10 hidden size-6 bg-[#f2e8d2] p-1 text-[#8b432d] ${columns === "five" ? "xl:block" : "lg:block"}`} />}
+
+            {index < steps.length - 1 && (
+              <ArrowRight
+                className={`absolute -right-3 top-7 z-10 hidden size-6 bg-[#f2e8d2] p-1 text-[#8b432d] ${
+                  columns === "five" ? "xl:block" : "lg:block"
+                }`}
+              />
+            )}
           </article>
         );
       })}
@@ -239,18 +613,33 @@ function FlowConnector({ label }: { label: string }) {
   );
 }
 
-function BranchCard({ tone, title, copy }: { tone: "stop" | "hold" | "continue" | "neutral"; title: string; copy: string }) {
+function BranchCard({
+  tone,
+  title,
+  copy,
+}: {
+  tone: "stop" | "hold" | "continue";
+  title: string;
+  copy: string;
+}) {
   const styles = {
     stop: "border-[#b83f37]/35 bg-[#fff1ec]",
     hold: "border-[#b78035]/35 bg-[#fff4df]",
     continue: "border-[#31513e]/30 bg-[#e8eee4]",
-    neutral: "border-[#6b4b2e]/20 bg-[#fbf5e7]",
+  };
+
+  const dotStyles = {
+    stop: "bg-[#b83f37]",
+    hold: "bg-[#b78035]",
+    continue: "bg-[#31513e]",
   };
 
   return (
     <article className={`border p-5 ${styles[tone]}`}>
       <div className="flex items-start gap-3">
-        <span className={`mt-1 size-2.5 shrink-0 rounded-full ${tone === "stop" ? "bg-[#b83f37]" : tone === "hold" ? "bg-[#b78035]" : tone === "continue" ? "bg-[#31513e]" : "bg-[#847766]"}`} />
+        <span
+          className={`mt-1 size-2.5 shrink-0 rounded-full ${dotStyles[tone]}`}
+        />
         <div>
           <h3 className="font-display text-2xl text-[#20352a]">{title}</h3>
           <p className="mt-2 text-sm leading-6 text-[#69675d]">{copy}</p>
@@ -260,38 +649,56 @@ function BranchCard({ tone, title, copy }: { tone: "stop" | "hold" | "continue" 
   );
 }
 
-function RecommendationPreview() {
+function PathwayCard({
+  code,
+  title,
+  copy,
+  tone,
+  icon: Icon,
+}: {
+  code: string;
+  title: string;
+  copy: string;
+  tone: PathwayTone;
+  icon: LucideIcon;
+}) {
+  const styles: Record<PathwayTone, string> = {
+    medical: "border-[#b83f37]/25 bg-[#fff1ec]",
+    coordinate: "border-[#31513e]/25 bg-[#e8eee4]",
+    ayurveda: "border-[#8b432d]/20 bg-[#f4e8d0]",
+    apothecary: "border-[#b78035]/28 bg-[#fff4df]",
+    none: "border-[#6b4b2e]/18 bg-[#fbf5e7]",
+  };
+
   return (
-    <section className="folio-frame bg-[#ead9bb] p-6 sm:p-9">
-      <div className="relative z-10 grid gap-8 lg:grid-cols-[.8fr_1.2fr]">
-        <div>
-          <p className="eyebrow text-[#8b432d]">WhatsApp recommendation format</p>
-          <h2 className="font-display mt-4 text-4xl leading-[.98] tracking-[-.035em] text-[#20352a] sm:text-5xl">A suggestion should answer every practical question.</h2>
-          <p className="mt-5 leading-7 text-[#66645a]">This is the structure—not an automatic recommendation. The actual items appear only after Vaidya review.</p>
-        </div>
-        <div className="border border-[#6b4b2e]/22 bg-[#fffaf0] p-5 sm:p-6">
-          <div className="flex items-center justify-between border-b border-[#6b4b2e]/18 pb-4">
-            <div>
-              <p className="eyebrow text-[#8b432d]">Your reviewed plan</p>
-              <p className="font-display mt-1 text-2xl text-[#20352a]">Recommendation 01</p>
-            </div>
-            <MessageCircle className="size-6 text-[#31513e]" />
-          </div>
-          <div className="divide-y divide-[#6b4b2e]/15">
-            {[["Selected item", "Named after review"], ["Why it fits", "Linked to your stated concern and context"], ["How to use", "Format · timing · directions · duration"], ["Safety", "Relevant cautions and pause rules"], ["Quantity", "Amount required for the review period"], ["Price", "Item amount and complete total"]].map(([label, value]) => (
-              <div key={label} className="grid grid-cols-[7rem_1fr] gap-3 py-3 text-sm">
-                <span className="font-semibold text-[#294738]">{label}</span>
-                <span className="text-[#6c685e]">{value}</span>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 grid gap-2 sm:grid-cols-3">
-            <span className="bg-[#263f32] px-3 py-2 text-center text-sm font-semibold text-[#fffaf0]">Accept</span>
-            <span className="border border-[#6b4b2e]/25 px-3 py-2 text-center text-sm font-semibold text-[#294738]">Ask a question</span>
-            <span className="border border-[#6b4b2e]/25 px-3 py-2 text-center text-sm font-semibold text-[#294738]">Not now</span>
-          </div>
-        </div>
+    <article className={`min-h-64 border p-6 ${styles[tone]}`}>
+      <div className="flex items-center justify-between">
+        <span className="font-display text-xl text-[#8b432d]">{code}</span>
+        <Icon className="size-5 text-[#31513e]" />
       </div>
-    </section>
+
+      <h3 className="font-display mt-7 text-3xl leading-tight text-[#20352a]">
+        {title}
+      </h3>
+      <p className="mt-4 leading-7 text-[#69675d]">{copy}</p>
+    </article>
+  );
+}
+
+function PrincipleCard({ title, copy }: { title: string; copy: string }) {
+  return (
+    <article className="border border-[#d4a55f]/24 bg-[#fffaf0]/[.03] p-6">
+      <h3 className="font-display text-3xl">{title}</h3>
+      <p className="mt-3 leading-7 text-[#fffaf0]/60">{copy}</p>
+    </article>
+  );
+}
+
+function DecisionChip({ title, copy }: { title: string; copy: string }) {
+  return (
+    <article className="border border-[#6b4b2e]/18 bg-[#fbf5e7] p-5">
+      <h3 className="font-display text-2xl text-[#20352a]">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-[#69675d]">{copy}</p>
+    </article>
   );
 }
